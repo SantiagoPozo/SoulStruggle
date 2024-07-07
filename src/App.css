@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 580px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button#start {
+  font-size: 30pt;
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+}
+#gaming {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+#panel.heaven {
+  order: 0;
+  transform: rotate(180deg);
+}
+
+#panel.hell {
+  order: 2;
+}
+
+#board > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 10px solid #34ba57;
+  border-radius: 10px;
+  width: 500px;
+  margin: 10px;
+  order: 1;
+}
+#board > div.heaven {
+  background-color: lightblue;
+}
+
+#board > div.hell {
+  background-color: orange;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  padding: 5px;
+  margin: 5px;
+  height: 600px;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border-radius: 50%;
+  margin: 5px;
+  box-sizing: border-box;
+}
+
+.circle.heaven {
+  background-color: #3498db;
+}
+.circle.earth {
+  background-color: #34db98;
+}
+
+.circle.hell {
+  background-color: #db7734;
+}
+
+.circle.hell.border {
+  border: 5px solid darkred;
+}
+.circle.heaven.border {
+  border: 5px solid darkslateblue;
+}
+.meeple {
+  height: 20px;
+  width: 20px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  border-radius: 50%;
+
+  left: 15px;
+}
+
+.meeple.shadow {
+}
+
+.label {
+  width: 100%;
+  text-align: center;
+}
+
+#head {
+  transform: rotate(180deg);
+}
+
+#dadum,
+#options {
+  display: flex;
+  justify-content: space-evenly;
+  width: 550px;
+}
+
+#options {
+  margin-top: 20px;
+}
+
+#options button {
+  font-size: 16pt;
+  padding: 10px;
+}
+
+.dado {
+  width: 80px;
+  height: 80px;
+  font-size: 14pt;
+  margin-left: 10px;
+  background-repeat: no-repeat;
+  background-size: cover; /* 'contain'  */
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#dadum.heaven .dado {
+  background-image: url("/src/img/triangle.png");
+}
+
+#dadum.hell .dado {
+  background-image: url("/src/img/black-triangle.png");
+}
+#dadum button {
+  padding-left: 10px;
+  padding-right: 10px;
+}
