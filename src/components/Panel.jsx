@@ -14,7 +14,6 @@ const DivDado = (props) => {
   );
 };
 const Panel = ({
-  isGameActive,
   isHeavenCurrentPlayer,
   handleShadowPositions,
   shadowPositions,
@@ -23,32 +22,42 @@ const Panel = ({
   colState,
   mainPositions,
 }) => {
+  /****************************
+   ******   Inner Component
+   *****************************/
+  const LostTurn = ({ changePlayer }) => (
+    <button
+      onClick={() => {
+        endTurn(false);
+        changePhase();
+      }}
+    >
+      Lost turn!
+    </button>
+  );
   const [dados, setDados] = useState([0, 0, 0, 0]);
   const roll4Dice = () =>
     setDados([rollDx(4), rollDx(4), rollDx(4), rollDx(4)]);
+  // setDados([1, 1, 1, 1]);
+
   const [isDicePhase, setDicePhase] = useState(true);
 
   const changePhase = () => {
     setDicePhase(!isDicePhase);
   };
   const className = isHeavenCurrentPlayer ? "heaven" : "hell";
-  const isActiveColum = colState.active; // Array. From 2 to 9 shows true or false
+  const isActiveColumn = colState.active; // Array. From 2 to 9 shows true or false
 
   const options = [
     [dados[0] + dados[1], dados[2] + dados[3]],
     [dados[0] + dados[2], dados[1] + dados[3]],
     [dados[0] + dados[3], dados[1] + dados[2]],
   ];
-  let numOfActiveCols = isActiveColum.filter((item) => item === true).length;
+  let numOfActiveCols = isActiveColumn.filter((item) => item === true).length;
 
-  const multipliedOptions = [];
-
-  const components = [];
-
-  /****************************
-   ******   Inner Component
-   *****************************/
-
+  /***********************************
+   ******   OptionButton. A component
+   **********************************/
   const OptionButton = ({
     o1,
     o2,
@@ -75,50 +84,93 @@ const Panel = ({
     );
   };
 
-  /****************************
-   ******   Inner Component
-   *****************************/
-  const LostTurn = ({ changePlayer }) => (
-    <button
-      onClick={() => {
-        endTurn(false);
-        changePhase();
-      }}
-    >
-      Lost turn!
-    </button>
-  );
+  const isXColAvailable = (x, isHeavenTurn) => {
+    // x es la columna que se desea evaluar.
+    // devuelve un vector de tres valores boleanos:
+    // [isShadowLastForCP, isShadowNextToLastForCP, isLocked]
 
+    const player = isHeavenTurn ? "HEAVEN" : "HELL";
+    console.log("**** COLUMNA ", x, "~", player, "*****");
+
+    const last = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
+    const NTLast = [undefined, undefined, 1, 3, 5, 7, 5, 3, 1];
+
+    const shadowIsLast =
+      (isHeavenTurn && shadowPositions[x] === last[x]) ||
+      (!isHeavenTurn && shadowPositions[x] === -last[x]);
+    console.log("Está shadow al final?: ", shadowIsLast);
+
+    const shadowIsNextToLast =
+      (isHeavenTurn && shadowPositions[x] === NTLast[x]) ||
+      (!isHeavenTurn && shadowPositions[x] === -NTLast[x]);
+    console.log("Está shadow al final?: ", shadowIsLast);
+
+    /*     const colIsLocked = colState.locked[x];
+    console.log(x + " is locked?: ", colIsLocked); */
+
+    const answer = [!shadowIsLast, !shadowIsLast && !shadowIsNextToLast];
+    // answer devuelve
+    // [0] » x col is available for 1 step? (true or false)
+    // [1] » x col is available for 2 steps? (true or false)
+
+    return answer;
+  };
+
+  const multipliedOptions = [];
+
+  /*******************************
+   *  Feeding choseButonList
+   *******************************/
   options.forEach((element) => {
     const [a, b] = [element[0], element[1]];
-    numOfActiveCols === 0 && multipliedOptions.push(element);
+    const p = isHeavenCurrentPlayer;
+    const aFor1Step = isXColAvailable(a, p)[0];
+    const aFor2Steps = isXColAvailable(a, p)[1];
+    const bFor1Step = isXColAvailable(b, p)[0];
 
-    numOfActiveCols === 1 &&
-      (isActiveColum[a] || isActiveColum[b]) &&
-      multipliedOptions.push([a, b]);
+    if (a === b) {
+      if (
+        numOfActiveCols <= 1 ||
+        (numOfActiveCols === 2 && isActiveColumn[a])
+      ) {
+        aFor2Steps && multipliedOptions.push(element);
+        aFor1Step && !aFor2Steps && multipliedOptions.push([a, false]);
+      }
+    } else {
+      // a != b
+      if (
+        numOfActiveCols === 0 ||
+        (numOfActiveCols === 1 && (isActiveColumn[a] || isActiveColumn[b])) ||
+        (numOfActiveCols === 2 && isActiveColumn[a] && isActiveColumn[b])
+      ) {
+        aFor1Step && bFor1Step && multipliedOptions.push(element);
+        aFor1Step && !bFor1Step && multipliedOptions.push([a, false]);
+        !aFor1Step && bFor1Step && multipliedOptions.push([b, false]);
+      }
 
-    if (numOfActiveCols === 1 && !isActiveColum[a] && !isActiveColum[b]) {
-      multipliedOptions.push([a, false]);
-      multipliedOptions.push([b, false]);
-    }
+      if (numOfActiveCols === 1 && !isActiveColumn[a] && !isActiveColumn[b]) {
+        aFor1Step && multipliedOptions.push([a, false]);
+        bFor1Step && multipliedOptions.push([b, false]);
+      }
 
-    if (numOfActiveCols === 2) {
-      isActiveColum[a] && isActiveColum[b] && multipliedOptions.push(element);
-      isActiveColum[a] &&
-        !isActiveColum[b] &&
-        multipliedOptions.push([a, false]);
-      !isActiveColum[a] &&
-        isActiveColum[b] &&
-        multipliedOptions.push([b, false]);
+      if (numOfActiveCols === 2 && isActiveColumn[a] && !isActiveColumn[b]) {
+        aFor1Step && multipliedOptions.push([a, false]);
+      }
+
+      if (numOfActiveCols === 2 && !isActiveColumn[a] && isActiveColumn[b]) {
+        bFor1Step && multipliedOptions.push([b, false]);
+      }
     }
   });
 
   console.log("numOfActiveCols: ", numOfActiveCols);
   let k = -1;
+
+  const choseBuntonList = [];
   multipliedOptions.forEach((element) => {
     k++;
     const [a, b] = element;
-    components.push(
+    choseBuntonList.push(
       <OptionButton
         key={k}
         o1={a}
@@ -131,9 +183,9 @@ const Panel = ({
     );
   });
 
-  components.length == 0 &&
+  choseBuntonList.length === 0 &&
     !isDicePhase &&
-    components.push(<LostTurn endTurn={endTurn} />);
+    choseBuntonList.push(<LostTurn endTurn={endTurn} />);
 
   return (
     <div id="panel">
@@ -149,7 +201,6 @@ const Panel = ({
             roll4Dice();
             changePhase();
           }}
-          disabled={!isGameActive}
         >
           Roll the Dice
         </button>
@@ -163,7 +214,7 @@ const Panel = ({
           Pass
         </button>{" "}
       </div>
-      <div id="options">{components}</div>
+      <div id="options">{choseBuntonList}</div>
     </div>
   );
 };
