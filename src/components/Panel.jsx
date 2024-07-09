@@ -16,16 +16,14 @@ const DivDado = (props) => {
 const Panel = ({
   isHeavenCurrentPlayer,
   handleShadowPositions,
-  shadowPositions,
   endTurn,
   updateActivity,
-  colState,
-  mainPositions,
+  gameState,
 }) => {
   /****************************
    ******   Inner Component
    *****************************/
-  const LostTurn = ({ changePlayer }) => (
+  const LostTurn = () => (
     <button
       onClick={() => {
         endTurn(false);
@@ -46,7 +44,7 @@ const Panel = ({
     setDicePhase(!isDicePhase);
   };
   const className = isHeavenCurrentPlayer ? "heaven" : "hell";
-  const isActiveColumn = colState.active; // Array. From 2 to 9 shows true or false
+  const isActiveColumn = gameState.active; // Array. From 2 to 9 shows true or false
 
   const options = [
     [dados[0] + dados[1], dados[2] + dados[3]],
@@ -89,23 +87,23 @@ const Panel = ({
     // devuelve un vector de tres valores boleanos:
     // [isShadowLastForCP, isShadowNextToLastForCP, isLocked]
 
-    const player = isHeavenTurn ? "HEAVEN" : "HELL";
-    console.log("**** COLUMNA ", x, "~", player, "*****");
+    // const player = isHeavenTurn ? "HEAVEN" : "HELL";
+    // console.log("**** COLUMNA ", x, "~", player, "*****");
 
     const last = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
     const NTLast = [undefined, undefined, 1, 3, 5, 7, 5, 3, 1];
 
     const shadowIsLast =
-      (isHeavenTurn && shadowPositions[x] === last[x]) ||
-      (!isHeavenTurn && shadowPositions[x] === -last[x]);
-    console.log("Está shadow al final?: ", shadowIsLast);
+      (isHeavenTurn && gameState.sPositions[x] === last[x]) ||
+      (!isHeavenTurn && gameState.sPositions[x] === -last[x]);
+    // console.log("Está shadow al final?: ", shadowIsLast);
 
     const shadowIsNextToLast =
-      (isHeavenTurn && shadowPositions[x] === NTLast[x]) ||
-      (!isHeavenTurn && shadowPositions[x] === -NTLast[x]);
-    console.log("Está shadow al final?: ", shadowIsLast);
+      (isHeavenTurn && gameState.sPositions[x] === NTLast[x]) ||
+      (!isHeavenTurn && gameState.sPositions[x] === -NTLast[x]);
+    // console.log("Está shadow al final?: ", shadowIsLast);
 
-    /*     const colIsLocked = colState.locked[x];
+    /*     const colIsLocked = gameState.locked[x];
     console.log(x + " is locked?: ", colIsLocked); */
 
     const answer = [!shadowIsLast, !shadowIsLast && !shadowIsNextToLast];
@@ -163,7 +161,7 @@ const Panel = ({
     }
   });
 
-  console.log("numOfActiveCols: ", numOfActiveCols);
+  // console.log("numOfActiveCols: ", numOfActiveCols);
   let k = -1;
 
   const choseBuntonList = [];
@@ -185,7 +183,7 @@ const Panel = ({
 
   choseBuntonList.length === 0 &&
     !isDicePhase &&
-    choseBuntonList.push(<LostTurn endTurn={endTurn} />);
+    choseBuntonList.push(<LostTurn />);
 
   return (
     <div id="panel">

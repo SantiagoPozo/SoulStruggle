@@ -1,36 +1,30 @@
-/* const Scoreboard = ({ colState }) => {
-  return (
-
-  );
-}; */
-
-const Board = ({
-  mainPositions,
-  shadowPositions,
-  colState,
-  isHeavenCurrentPlayer,
-}) => {
+const Board = ({ gameState, isHeavenCurrentPlayer }) => {
+  const hn = gameState.score.heaven;
+  const hl = gameState.score.hell;
   const board = [];
+
+  board.push(
+    <div className="columna">
+      <p id="score-board">
+        Hell <span id="heaven-score"> {hl} </span> -{" "}
+        <span id="hell-score">{" " + hn} </span> Heaven
+      </p>
+    </div>
+  );
 
   for (let index = 2; index <= 8; index++) {
     board.push(
       <Column
         colIndex={index}
         key={index}
-        mainPosition={mainPositions[index]}
-        shadowPosition={shadowPositions[index]}
+        mPosition={gameState.mPositions[index]}
+        sPosition={gameState.sPositions[index]}
       />
     );
   }
 
   return (
     <>
-      <p id="score-board">
-        {" "}
-        Heaven <span id="heaven-score"> {colState.score("heaven")} </span> -
-        <span id="hell-score">{" " + colState.score("hell")} </span> Hell
-      </p>
-
       <div id="board">
         <div className={isHeavenCurrentPlayer ? "heaven" : "hell"}>{board}</div>
       </div>
@@ -38,7 +32,7 @@ const Board = ({
   );
 };
 
-const Column = ({ colIndex, mainPosition, shadowPosition }) => {
+const Column = ({ colIndex, mPosition, sPosition }) => {
   let size = 2;
   [3, 7].includes(colIndex) && (size = size + 2);
   [4, 6].includes(colIndex) && (size = size + 4);
@@ -71,20 +65,9 @@ const Column = ({ colIndex, mainPosition, shadowPosition }) => {
 
   return (
     <div className="columna">
-      <div> #{colIndex}#</div>
       {circulos}
-      <Meeple
-        key="0"
-        type="shadow"
-        colNumber={colIndex}
-        position={shadowPosition}
-      />
-      <Meeple
-        key="1"
-        type="main"
-        colNumber={colIndex}
-        position={mainPosition}
-      />
+      <Meeple key="0" type="shadow" colNumber={colIndex} position={sPosition} />
+      <Meeple key="1" type="main" colNumber={colIndex} position={mPosition} />
     </div>
   );
 };
@@ -97,10 +80,10 @@ const Meeple = ({ type, colNumber, position }) => {
   // increment vale 2, 4, 6, 8, 6, 4, 2. Es el número de círculos
   // por encima de earth y por debajo de earth.
 
-  let yCoord = type === "main" ? -10 : 2;
+  let yCoord = type === "main" ? 2 : 1;
   yCoord += -39 * increment;
 
-  const xCoord = type === "main" ? 15 : 12;
+  const xCoord = type === "main" ? 10 : 20;
   const className = type === "main" ? "main meeple" : "shadow meeple";
   const id =
     type === "main" ? `meeple-main${colNumber}` : `meeple-shadow${colNumber}`;
@@ -135,7 +118,11 @@ const MeepleImage = ({ fill }) => {
 };
 
 const Circle = ({ circleNumber, type, colIndex }) => {
-  return <div className={"circle " + type}></div>;
+  if (type.indexOf("last") === -1) {
+    return <div className={"circle " + type}></div>;
+  } else {
+    return <div className={"circle " + type}>{colIndex}</div>;
+  }
 };
 
 export default Board;
