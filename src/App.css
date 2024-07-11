@@ -7,9 +7,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+header {
+  margin-top: 100px;
+  text-align: center;
+  font-synthesis-small-caps: inherit;
+}
+
 #root {
   width: 580px;
-  margin: auto;
+  margin-left: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,20 +44,56 @@ button#start {
 #board {
   margin-top: 20px;
 }
-#board > div {
+#heav-score {
+  position: absolute;
+  top: 50px;
+  left: 80px;
+  width: 80px;
+  font-size: 18pt;
+  text-align: center;
+  background-color: rgb(255, 255, 255, 0.5);
+  border-radius: 5px;
+  padding: 5px;
+  border: 5px solid transparent;
+}
+#heav-score.border {
+  border-color: rgb(255, 255, 255, 1);
+}
+
+#hell-score {
+  position: absolute;
+  top: 50px;
+  left: 450px;
+  width: 80px;
+  font-size: 18pt;
+  text-align: center;
+  background-color: rgb(255, 255, 255, 0.5);
+  border-radius: 5px;
+  padding: 5px;
+  border: 5px solid transparent;
+}
+
+#hell-score.border {
+  border-color: rgb(0, 0, 0, 1);
+}
+
+#real-board {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 10px solid #34ba57;
+  border: 10px solid darkblue;
   border-radius: 10px;
   order: 1;
 }
 
-#board > div.heaven {
+#real-board.hell {
+  border-color: darkred;
+}
+#real-board.heaven {
   background-color: lightblue;
 }
 
-#board > div.hell {
+#real-board.hell {
   background-color: orange;
 }
 
@@ -60,12 +102,11 @@ button#start {
   padding: 0;
   width: 60px;
 }
-.columna:first-of-type {
-  height: 402px;
-  width: 50px;
-}
 
 p#score-board {
+  position: absolute;
+  top: 160px;
+  left: 0px;
   font-size: 20pt;
   text-align: center;
   writing-mode: vertical-rl;
@@ -148,14 +189,13 @@ p#score-board {
 }
 
 #options button {
-  font-size: 16pt;
   padding: 10px;
+  font-size: 16pt;
 }
 
 .dado {
   width: 80px;
   height: 80px;
-  font-size: 14pt;
   margin-left: 10px;
   background-repeat: no-repeat;
   background-size: cover; /* 'contain'  */
@@ -163,13 +203,20 @@ p#score-board {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 16pt;
+  font-weight: bold;
 }
+
 #dadum.heaven .dado {
   background-image: url("/src/img/triangle.png");
+  color: darkblue;
+  padding-top: 10px;
 }
 
 #dadum.hell .dado {
   background-image: url("/src/img/black-triangle.png");
+  color: darkred;
+  padding-bottom: 10px;
 }
 #dadum button {
   padding-left: 10px;
@@ -177,30 +224,23 @@ p#score-board {
 }
 
 #victory-message {
-  font-size: 64pt;
+  font-size: 48pt;
   position: absolute;
   top: 150px;
   cursor: pointer;
   border: 3px solid grey;
   border-radius: 20px;
-  padding: 30px;
+  padding: 24px;
   box-shadow: 6px -6px grey;
+  text-align: center;
+}
+#victory-message.hell {
+  background-color: orange;
+}
+#victory-message.heaven {
+  background-color: #3498db;
 }
 
 #victory-message:hover {
-}
-
-#victory-message:active {
   box-shadow: 1px -1px;
-}
-
-#marcador {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  border-top: 1px solid black;
-  text-align: center;
-  padding-top: 5px;
-  font-size: 18pt;
 }

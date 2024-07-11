@@ -8,11 +8,9 @@ const VictoryMessage = ({ gS, setGS }) => {
   if (gS.score.hell >= 3) message = "Hell won!";
 
   const closeVictory = () => {
-    const heavenStart = (gS.winCount.hell + gS.winCount.heaven) % 2;
     setGS((prv) => {
       const nxt = {
         ...valuesAtTheBeginning,
-        isHCP: heavenStart,
         winCount: {
           hell: prv.winCount.hell,
           heaven: prv.winCount.heaven,
@@ -23,13 +21,15 @@ const VictoryMessage = ({ gS, setGS }) => {
     });
   };
 
+  const className = gS.winner;
+
   return (
-    <div id="victory-message" onClick={closeVictory}>
+    <div id="victory-message" className={className} onClick={closeVictory}>
       <div>
         <p>{message}</p>
         <p>Play Again...</p>
         <p>
-          Heaven {gS.winCount.heaven} - {gS.winCount.hell} Hell
+          Heaven {gS.score.heaven} - {gS.score.hell} Hell
         </p>
       </div>
     </div>

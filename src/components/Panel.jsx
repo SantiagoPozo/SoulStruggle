@@ -180,7 +180,7 @@ const Panel = ({ handleShadowPositions, endTurn, updateActivity, gS }) => {
 
   choseBuntonList.length === 0 &&
     !isDicePhase &&
-    choseBuntonList.push(<LostTurn />);
+    choseBuntonList.push(<LostTurn key="0" />);
 
   return (
     <div id="panel">

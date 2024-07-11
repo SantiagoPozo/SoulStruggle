@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-import StartButton from "./components/Inicio";
-import Title from "./components/Title";
+import Inicio from "./components/Inicio";
 import Board from "./components/Board";
 import Panel from "./components/Panel";
 import VictoryMessage from "./components/Victory";
 import "./App.css";
 
 export const valuesAtTheBeginning = {
+  gameID: 1,
   isGameStarted: false,
   isGameOver: false,
   isHCP: true,
@@ -89,9 +89,14 @@ export default function App() {
       if (gS.mPositions[n] <= -gC.posToPunc[n]) hl++;
     }
 
-    hv >= gC.colsToWin && (hvW++ || (winner = "heaven"));
-    hl >= gC.colsToWin && (hlW++ || (winner = "hell"));
-
+    if (hv >= gC.colsToWin) {
+      hvW++;
+      winner = "heaven";
+    }
+    if (hl >= gC.colsToWin) {
+      hlW++;
+      winner = "hell";
+    }
     const isOver = hl >= gC.colsToWin || hv >= gC.colsToWin;
 
     setGS((prv) => {
@@ -142,18 +147,22 @@ export default function App() {
   };
 
   const startGame = () => {
-    setGS((prevState) => ({
-      ...prevState,
-      isGameStarted: true,
-    }));
+    setGS((prv) => {
+      const heavenStarts = !((gS.winCount.hell + gS.winCount.heaven) % 2);
+      const nxt = {
+        ...prv,
+        isGameStarted: true,
+        isHCP: heavenStarts ? true : false,
+        gameID: prv.gameID + 1,
+      };
+      return nxt;
+    });
   };
 
   if (!gS.isGameStarted) {
     return (
       <>
-        <Title />
-        <StartButton ini={startGame} />
-        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
+        <Inicio ini={startGame} />
       </>
     );
   }
@@ -169,7 +178,6 @@ export default function App() {
           gS={gS}
           updateActivity={updateActivity}
         />
-        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
       </div>
     );
   }
