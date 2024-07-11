@@ -7,10 +7,12 @@ import VictoryMessage from "./components/Victory";
 import "./App.css";
 
 export const valuesAtTheBeginning = {
-  gameID: 1,
+  gameID: 0,
   isGameStarted: false,
   isGameOver: false,
   isHCP: true,
+  move: 0,
+  turn: 0,
   score: {
     hell: 0,
     heaven: 0,
@@ -175,8 +177,9 @@ export default function App() {
           updateProgress={updateProgress}
           handleShadowPositions={handleShadowPositions}
           endTurn={endTurn}
-          gS={gS}
           updateActivity={updateActivity}
+          gS={gS}
+          setGS={setGS}
         />
       </div>
     );

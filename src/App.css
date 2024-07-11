@@ -166,6 +166,7 @@ p#score-board {
   background-size: contain;
   background-position: center;
   left: 15px;
+  transition: top 0.3s ease;
 }
 
 .label {
@@ -205,6 +206,11 @@ p#score-board {
   justify-content: center;
   font-size: 16pt;
   font-weight: bold;
+  transition: transform 0.3 ease;
+}
+
+.dado.par {
+  transform: rotate(360deg);
 }
 
 #dadum.heaven .dado {

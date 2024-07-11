@@ -8,12 +8,18 @@ const rollDx = (x) => {
 
 const DivDado = (props) => {
   return (
-    <div id={props.id} className="dado">
+    <div id={props.id} className={"dado " + props.className}>
       {props.number}
     </div>
   );
 };
-const Panel = ({ handleShadowPositions, endTurn, updateActivity, gS }) => {
+const Panel = ({
+  handleShadowPositions,
+  endTurn,
+  updateActivity,
+  gS,
+  setGS,
+}) => {
   /****************************
    ******   Inner Component
    *****************************/
@@ -181,14 +187,15 @@ const Panel = ({ handleShadowPositions, endTurn, updateActivity, gS }) => {
   choseBuntonList.length === 0 &&
     !isDicePhase &&
     choseBuntonList.push(<LostTurn key="0" />);
+  const par = gS.move % 2 ? "par" : undefined;
 
   return (
     <div id="panel">
       <div id="dadum" className={className}>
-        <DivDado id="dado0" key={"0"} number={dados[0]} />
-        <DivDado id="dado1" key={"1"} number={dados[1]} />
-        <DivDado id="dado2" key={"2"} number={dados[2]} />
-        <DivDado id="dado3" key={"3"} number={dados[3]} />
+        <DivDado id="dado0" className={par} key={"0"} number={dados[0]} />
+        <DivDado id="dado1" className={par} key={"1"} number={dados[1]} />
+        <DivDado id="dado2" className={par} key={"2"} number={dados[2]} />
+        <DivDado id="dado3" className={par} key={"3"} number={dados[3]} />
         <button
           id="roll-button"
           style={{ visibility: isDicePhase ? "" : "hidden" }}
