@@ -7,68 +7,69 @@ import Panel from "./components/Panel";
 import VictoryMessage from "./components/Victory";
 import "./App.css";
 
-export default function App() {
-  const [isHeavenCurrentPlayer, setIsHeavenCurrentPlayer] = useState(true);
-  const valuesAtTheBeginning = {
-    active: Array(10).fill(false, 2, 9),
-    mPositions: Array(10).fill(0, 2, 9), //main Meeples positions
-    sPositions: Array(10).fill(0, 2, 9), //shadow Meeples positions
-    score: {
-      hell: 0,
-      heaven: 0,
-    },
-    isGameStarted: false,
-    isGameOver: false,
-    heavenWon: undefined,
-  };
+export const valuesAtTheBeginning = {
+  isGameStarted: false,
+  isGameOver: false,
+  isHCP: true,
+  score: {
+    hell: 0,
+    heaven: 0,
+  },
+  winner: undefined,
+  winCount: {
+    hell: 0,
+    heaven: 0,
+  },
+  active: Array(9).fill(false, 2, 9),
+  mPositions: Array(9).fill(0, 2, 9), //main Meeples
+  sPositions: Array(9).fill(0, 2, 9), //shadow Meeples
+};
 
-  const [gameState, setGameState] = useState({
+const gC = {
+  colsToWin: 3,
+  posToPunc: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
+};
+
+export default function App() {
+  const [gS, setGS] = useState({
     ...valuesAtTheBeginning,
-    winCount: {
-      hell: 0,
-      heaven: 0,
-    },
   });
 
-  console.log("gameState queda definido", gameState);
+  console.log("gS queda definido", gS);
 
   useEffect(() => {
     updateScore();
-  }, [gameState.mPositions]);
+  }, [gS.mPositions]);
 
-  const updateActivity = (colIndex, newValue) => {
-    setGameState((prevState) => {
-      const newState = {
-        ...prevState,
+  const updateActivity = (colIndex) => {
+    setGS((prv) => {
+      const nxt = {
+        ...prv,
         active: [
-          ...prevState.active.slice(0, colIndex),
-          newValue,
-          ...prevState.active.slice(colIndex + 1),
+          ...prv.active.slice(0, colIndex),
+          true,
+          ...prv.active.slice(colIndex + 1),
         ],
       };
-      //console.log("Updated state:", newState);
-      return newState;
+      return nxt;
     });
   };
 
   const updateProgress = (nextPositions) => {
-    setGameState((prv) => ({
+    setGS((prv) => ({
       ...prv,
       mPositions: [...nextPositions],
+      active: Array(9).fill(false, 2, 9),
     }));
-
-    for (let index = 2; index <= gameState.mPositions.length; index++) {
-      updateActivity(index, false);
-    }
   };
 
   const handleShadowPositions = (col) => {
-    setGameState((prev) => {
+    setGS((prev) => {
       const next = {
         ...prev,
         sPositions: [
           ...prev.sPositions.slice(0, col),
-          prev.sPositions[col] + Math.pow(-1, !isHeavenCurrentPlayer),
+          prev.sPositions[col] + Math.pow(-1, !gS.isHCP),
           ...prev.sPositions.slice(col + 1),
         ],
       };
@@ -78,99 +79,114 @@ export default function App() {
 
   const updateScore = () => {
     let hl = 0,
-      hn = 0;
-    const punctPositions = [undefined, undefined, 2, 3, 4, 5, 4, 3, 2];
+      hv = 0,
+      hlW = gS.winCount.hell,
+      hvW = gS.winCount.heaven,
+      winner = undefined;
 
-    for (let n = 2; n < gameState.mPositions.length; n++) {
-      if (gameState.mPositions[n] >= punctPositions[n]) hn++;
-      if (gameState.mPositions[n] <= -punctPositions[n]) hl++;
+    for (let n = 2; n < gS.mPositions.length; n++) {
+      if (gS.mPositions[n] >= +gC.posToPunc[n]) hv++;
+      if (gS.mPositions[n] <= -gC.posToPunc[n]) hl++;
     }
 
-    setGameState((prevState) => ({
-      ...prevState,
-      score: { hell: hl, heaven: hn },
-    }));
+    hv >= gC.colsToWin && (hvW++ || (winner = "heaven"));
+    hl >= gC.colsToWin && (hlW++ || (winner = "hell"));
 
-    hn >= 3 && endGame(true);
-    hl >= 3 && endGame(false);
-  };
+    const isOver = hl >= gC.colsToWin || hv >= gC.colsToWin;
 
-  const endGame = (heavenWon) => {
-    setGameState((prevState) => ({
-      ...prevState,
-      isGameOver: true,
-      heavenWon: heavenWon,
-    }));
+    setGS((prv) => {
+      const next = {
+        ...prv,
+        score: {
+          heaven: hv,
+          hell: hl,
+        },
+        winCount: {
+          heaven: hvW,
+          hell: hlW,
+        },
+        winner: winner,
+        isGameOver: isOver,
+      };
+
+      return next;
+    });
   };
 
   const endTurn = (isSuccess) => {
     if (isSuccess) {
       // Player PASSED
 
-      setGameState((prev) => {
+      setGS((prev) => {
         const next = {
           ...prev,
-          mPositions: [...gameState.sPositions.slice()],
+          mPositions: [...prev.sPositions.slice()],
+          isHCP: !prev.isHCP,
+          active: Array(9).fill(false, 2, 9),
         };
         return next;
       });
     } else {
       // Player failed
 
-      setGameState((prev) => {
+      setGS((prev) => {
         const next = {
           ...prev,
-          sPositions: [...gameState.mPositions.slice()],
+          sPositions: [...prev.mPositions.slice()],
+          isHCP: !prev.isHCP,
+          active: Array(9).fill(false, 2, 9),
         };
         return next;
       });
     }
-    setIsHeavenCurrentPlayer(!isHeavenCurrentPlayer);
-    for (let index = 2; index <= gameState.mPositions.length; index++) {
-      updateActivity(index, false);
-    }
   };
 
   const startGame = () => {
-    setGameState((prevState) => ({
+    setGS((prevState) => ({
       ...prevState,
       isGameStarted: true,
     }));
   };
 
-  if (!gameState.isGameStarted) {
+  if (!gS.isGameStarted) {
     return (
       <>
         <Title />
         <StartButton ini={startGame} />
+        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
       </>
     );
   }
 
-  if (gameState.isGameStarted && !gameState.isGameOver) {
+  if (gS.isGameStarted && !gS.isGameOver) {
     return (
       <div id="gaming">
-        <Board
-          gameState={gameState}
-          isHeavenCurrentPlayer={isHeavenCurrentPlayer}
-        />
+        <Board gS={gS} />
         <Panel
-          isHeavenCurrentPlayer={isHeavenCurrentPlayer}
           updateProgress={updateProgress}
           handleShadowPositions={handleShadowPositions}
           endTurn={endTurn}
-          gameState={gameState}
+          gS={gS}
           updateActivity={updateActivity}
         />
+        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
       </div>
     );
   }
-  if (gameState.isGameOver) {
+  if (gS.isGameOver) {
     return (
-      <VictoryMessage
-        heavenWon={gameState.heavenWon}
-        setGameState={setGameState}
-      />
+      <>
+        <VictoryMessage gS={gS} setGS={setGS} />
+        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
+      </>
     );
   }
 }
+
+const Marcador = ({ hell, heaven }) => {
+  return (
+    <p id="marcador">
+      Heaven {heaven} - {hell} Hell
+    </p>
+  );
+};

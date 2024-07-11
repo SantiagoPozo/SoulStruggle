@@ -13,13 +13,7 @@ const DivDado = (props) => {
     </div>
   );
 };
-const Panel = ({
-  isHeavenCurrentPlayer,
-  handleShadowPositions,
-  endTurn,
-  updateActivity,
-  gameState,
-}) => {
+const Panel = ({ handleShadowPositions, endTurn, updateActivity, gS }) => {
   /****************************
    ******   Inner Component
    *****************************/
@@ -43,8 +37,8 @@ const Panel = ({
   const changePhase = () => {
     setDicePhase(!isDicePhase);
   };
-  const className = isHeavenCurrentPlayer ? "heaven" : "hell";
-  const isActiveColumn = gameState.active; // Array. From 2 to 9 shows true or false
+  const className = gS.isHCP ? "heaven" : "hell";
+  const isActiveColumn = gS.active; // Array. From 2 to 9 shows true or false
 
   const options = [
     [dados[0] + dados[1], dados[2] + dados[3]],
@@ -71,8 +65,8 @@ const Panel = ({
           changePhase();
           handleShadowPositions(o1);
           o2 && handleShadowPositions(o2);
-          updateActivity(o1, true);
-          o2 && updateActivity(o2, true);
+          updateActivity(o1);
+          o2 && updateActivity(o2);
         }}
         style={{ visibility: isDicePhase && "hidden" }}
         disabled={disabled}
@@ -94,16 +88,16 @@ const Panel = ({
     const NTLast = [undefined, undefined, 1, 3, 5, 7, 5, 3, 1];
 
     const shadowIsLast =
-      (isHeavenTurn && gameState.sPositions[x] === last[x]) ||
-      (!isHeavenTurn && gameState.sPositions[x] === -last[x]);
+      (isHeavenTurn && gS.sPositions[x] === last[x]) ||
+      (!isHeavenTurn && gS.sPositions[x] === -last[x]);
     // console.log("Está shadow al final?: ", shadowIsLast);
 
     const shadowIsNextToLast =
-      (isHeavenTurn && gameState.sPositions[x] === NTLast[x]) ||
-      (!isHeavenTurn && gameState.sPositions[x] === -NTLast[x]);
+      (isHeavenTurn && gS.sPositions[x] === NTLast[x]) ||
+      (!isHeavenTurn && gS.sPositions[x] === -NTLast[x]);
     // console.log("Está shadow al final?: ", shadowIsLast);
 
-    /*     const colIsLocked = gameState.locked[x];
+    /*     const colIsLocked = gS.locked[x];
     console.log(x + " is locked?: ", colIsLocked); */
 
     const answer = [!shadowIsLast, !shadowIsLast && !shadowIsNextToLast];
@@ -121,7 +115,7 @@ const Panel = ({
    *******************************/
   options.forEach((element) => {
     const [a, b] = [element[0], element[1]];
-    const p = isHeavenCurrentPlayer;
+    const p = gS.isHCP;
     const aFor1Step = isXColAvailable(a, p)[0];
     const aFor2Steps = isXColAvailable(a, p)[1];
     const bFor1Step = isXColAvailable(b, p)[0];
@@ -162,11 +156,13 @@ const Panel = ({
   });
 
   // console.log("numOfActiveCols: ", numOfActiveCols);
-  let k = -1;
+  let k = 0;
+
+  const aux = new Set(multipliedOptions);
+  let unique = [...aux];
 
   const choseBuntonList = [];
-  multipliedOptions.forEach((element) => {
-    k++;
+  unique.forEach((element) => {
     const [a, b] = element;
     choseBuntonList.push(
       <OptionButton
@@ -179,6 +175,7 @@ const Panel = ({
         updateActivity={updateActivity}
       />
     );
+    k++;
   });
 
   choseBuntonList.length === 0 &&

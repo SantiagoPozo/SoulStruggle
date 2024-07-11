@@ -1,10 +1,10 @@
-const Board = ({ gameState, isHeavenCurrentPlayer }) => {
-  const hn = gameState.score.heaven;
-  const hl = gameState.score.hell;
+const Board = ({ gS }) => {
+  const hn = gS.score.heaven;
+  const hl = gS.score.hell;
   const board = [];
 
   board.push(
-    <div className="columna">
+    <div className="columna" key="1">
       <p id="score-board">
         Hell <span id="heaven-score"> {hl} </span> -{" "}
         <span id="hell-score">{" " + hn} </span> Heaven
@@ -17,16 +17,15 @@ const Board = ({ gameState, isHeavenCurrentPlayer }) => {
       <Column
         colIndex={index}
         key={index}
-        mPosition={gameState.mPositions[index]}
-        sPosition={gameState.sPositions[index]}
+        mPosition={gS.mPositions[index]}
+        sPosition={gS.sPositions[index]}
       />
     );
   }
-
   return (
     <>
       <div id="board">
-        <div className={isHeavenCurrentPlayer ? "heaven" : "hell"}>{board}</div>
+        <div className={gS.isHCP ? "heaven" : "hell"}>{board}</div>
       </div>
     </>
   );

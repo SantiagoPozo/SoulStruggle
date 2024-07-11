@@ -35,6 +35,9 @@ button#start {
   order: 2;
 }
 
+#board {
+  margin-top: 20px;
+}
 #board > div {
   display: flex;
   align-items: center;
@@ -171,4 +174,33 @@ p#score-board {
 #dadum button {
   padding-left: 10px;
   padding-right: 10px;
+}
+
+#victory-message {
+  font-size: 64pt;
+  position: absolute;
+  top: 150px;
+  cursor: pointer;
+  border: 3px solid grey;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 6px -6px grey;
+}
+
+#victory-message:hover {
+}
+
+#victory-message:active {
+  box-shadow: 1px -1px;
+}
+
+#marcador {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid black;
+  text-align: center;
+  padding-top: 5px;
+  font-size: 18pt;
 }
