@@ -6,13 +6,21 @@ import Panel from "./components/Panel";
 import VictoryMessage from "./components/Victory";
 import "./App.css";
 
+const resizeBodyHeight = () => {
+  const h = window.innerHeight;
+  document.body.style.minHeight = h + "px";
+};
+window.addEventListener("load", resizeBodyHeight);
+window.addEventListener("resize", resizeBodyHeight);
+
 export const valuesAtTheBeginning = {
   gameID: 0,
   isGameStarted: false,
   isGameOver: false,
-  isHCP: true,
-  move: 0,
-  turn: 0,
+  isHCP: true, // Is Heaven Current Player?
+  move: 0, // Some moves make a turn.
+  turn: 0, // when passed o fail, end a turn.
+  roll: [],
   score: {
     hell: 0,
     heaven: 0,
@@ -29,33 +37,23 @@ export const valuesAtTheBeginning = {
 
 const gC = {
   colsToWin: 3,
+  diceSize: 4,
   posToPunc: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
+  //I'm not goint to make an adaptation for that with
+  // cols from 2  to 12, but it is an estimulating idea.
 };
 
 export default function App() {
   const [gS, setGS] = useState({
     ...valuesAtTheBeginning,
   });
+  const [history, setHistory] = useState([]);
 
-  console.log("gS queda definido", gS);
+  // console.log("gS queda definido", gS);
 
   useEffect(() => {
     updateScore();
   }, [gS.mPositions]);
-
-  const updateActivity = (colIndex) => {
-    setGS((prv) => {
-      const nxt = {
-        ...prv,
-        active: [
-          ...prv.active.slice(0, colIndex),
-          true,
-          ...prv.active.slice(colIndex + 1),
-        ],
-      };
-      return nxt;
-    });
-  };
 
   const updateProgress = (nextPositions) => {
     setGS((prv) => ({
@@ -120,41 +118,13 @@ export default function App() {
     });
   };
 
-  const endTurn = (isSuccess) => {
-    if (isSuccess) {
-      // Player PASSED
-
-      setGS((prev) => {
-        const next = {
-          ...prev,
-          mPositions: [...prev.sPositions.slice()],
-          isHCP: !prev.isHCP,
-          active: Array(9).fill(false, 2, 9),
-        };
-        return next;
-      });
-    } else {
-      // Player failed
-
-      setGS((prev) => {
-        const next = {
-          ...prev,
-          sPositions: [...prev.mPositions.slice()],
-          isHCP: !prev.isHCP,
-          active: Array(9).fill(false, 2, 9),
-        };
-        return next;
-      });
-    }
-  };
-
   const startGame = () => {
     setGS((prv) => {
-      const heavenStarts = !((gS.winCount.hell + gS.winCount.heaven) % 2);
+      const heavenStarts = !((prv.winCount.hell + prv.winCount.heaven) % 2);
       const nxt = {
         ...prv,
         isGameStarted: true,
-        isHCP: heavenStarts ? true : false,
+        isHCP: heavenStarts,
         gameID: prv.gameID + 1,
       };
       return nxt;
@@ -171,15 +141,13 @@ export default function App() {
 
   if (gS.isGameStarted && !gS.isGameOver) {
     return (
-      <div id="gaming">
+      <div id="gaming" class={gS.isHCP ? "heaven" : "hell"}>
         <Board gS={gS} />
         <Panel
           updateProgress={updateProgress}
           handleShadowPositions={handleShadowPositions}
-          endTurn={endTurn}
-          updateActivity={updateActivity}
-          gS={gS}
           setGS={setGS}
+          gS={gS}
         />
       </div>
     );

@@ -4,8 +4,9 @@ import { valuesAtTheBeginning } from "../App";
 const VictoryMessage = ({ gS, setGS }) => {
   let message = "";
 
-  if (gS.score.heaven >= 3) message = "Heaven won!";
+  if (gS.score.heaven >= 3) message = "Heaven won ";
   if (gS.score.hell >= 3) message = "Hell won!";
+  message += gS.score.heaven + " - " + gS.score.hell;
 
   const closeVictory = () => {
     setGS((prv) => {
@@ -28,9 +29,6 @@ const VictoryMessage = ({ gS, setGS }) => {
       <div>
         <p>{message}</p>
         <p>Play Again...</p>
-        <p>
-          Heaven {gS.score.heaven} - {gS.score.hell} Hell
-        </p>
       </div>
     </div>
   );

@@ -13,21 +13,23 @@ const DivDado = (props) => {
     </div>
   );
 };
-const Panel = ({
-  handleShadowPositions,
-  endTurn,
-  updateActivity,
-  gS,
-  setGS,
-}) => {
+const Panel = ({ handleShadowPositions, gS, setGS }) => {
   /****************************
    ******   Inner Component
    *****************************/
   const LostTurn = () => (
     <button
       onClick={() => {
-        endTurn(false);
-        changePhase();
+        setGS((prev) => {
+          const next = {
+            ...prev,
+            sPositions: [...prev.mPositions.slice()],
+            isHCP: !prev.isHCP,
+            active: Array(9).fill(false, 2, 9),
+          };
+          return next;
+        });
+        setDicePhase(!isDicePhase);
       }}
     >
       Lost turn!
@@ -36,13 +38,11 @@ const Panel = ({
   const [dados, setDados] = useState([0, 0, 0, 0]);
   const roll4Dice = () =>
     setDados([rollDx(4), rollDx(4), rollDx(4), rollDx(4)]);
+
   // setDados([1, 1, 1, 1]);
 
   const [isDicePhase, setDicePhase] = useState(true);
 
-  const changePhase = () => {
-    setDicePhase(!isDicePhase);
-  };
   const className = gS.isHCP ? "heaven" : "hell";
   const isActiveColumn = gS.active; // Array. From 2 to 9 shows true or false
 
@@ -61,14 +61,25 @@ const Panel = ({
     o2,
     handleShadowPositions,
     isDicePhase,
-    changePhase,
-    updateActivity,
     disabled,
   }) => {
+    const updateActivity = (colIndex) => {
+      setGS((prv) => {
+        const nxt = {
+          ...prv,
+          active: [
+            ...prv.active.slice(0, colIndex),
+            true,
+            ...prv.active.slice(colIndex + 1),
+          ],
+        };
+        return nxt;
+      });
+    };
     return (
       <button
         onClick={() => {
-          changePhase();
+          setDicePhase(!isDicePhase);
           handleShadowPositions(o1);
           o2 && handleShadowPositions(o2);
           updateActivity(o1);
@@ -177,8 +188,7 @@ const Panel = ({
         o2={b}
         handleShadowPositions={handleShadowPositions}
         isDicePhase={isDicePhase}
-        changePhase={changePhase}
-        updateActivity={updateActivity}
+        setDicePhase={setDicePhase}
       />
     );
     k++;
@@ -190,7 +200,7 @@ const Panel = ({
   const par = gS.move % 2 ? "par" : undefined;
 
   return (
-    <div id="panel">
+    <div id="panel" class={gS.isHCP ? "hell" : "heaven"}>
       <div id="dadum" className={className}>
         <DivDado id="dado0" className={par} key={"0"} number={dados[0]} />
         <DivDado id="dado1" className={par} key={"1"} number={dados[1]} />
@@ -201,7 +211,12 @@ const Panel = ({
           style={{ visibility: isDicePhase ? "" : "hidden" }}
           onClick={() => {
             roll4Dice();
-            changePhase();
+            setGS((prv) => ({
+              ...prv,
+              roll: dados,
+              move: prv.move + 1,
+            }));
+            setDicePhase(!isDicePhase);
           }}
         >
           Roll the Dice
@@ -209,7 +224,15 @@ const Panel = ({
         <button
           id="pass-button"
           onClick={() => {
-            endTurn(true);
+            setGS((prev) => {
+              const next = {
+                ...prev,
+                mPositions: [...prev.sPositions.slice()],
+                isHCP: !prev.isHCP,
+                active: Array(9).fill(false, 2, 9),
+              };
+              return next;
+            });
           }}
           style={{ visibility: isDicePhase ? "" : "hidden" }}
         >

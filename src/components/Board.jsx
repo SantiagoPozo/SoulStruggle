@@ -1,12 +1,27 @@
 const Board = ({ gS }) => {
-  const hn = gS.winCount.heaven;
-  const hl = gS.winCount.hell;
+  const hnw = gS.winCount.heaven;
+  const hlw = gS.winCount.hell;
   const board = [];
 
   for (let index = 2; index <= 8; index++) {
+    const numOfAcCols = gS.active.reduce(
+      (acc, elem) => (elem === true ? acc + 1 : acc),
+      0
+    );
+    const end = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
+    const isAtTheEnd =
+      (gS.isHCP && gS.sPositions[index] === end[index]) ||
+      (!gS.isHCP && gS.sPositions[index] === -end[index]);
+    const isActive = gS.active[index];
+    const isAvailable =
+      (numOfAcCols < 2 && !isAtTheEnd) ||
+      (numOfAcCols === 2 && isActive && !isAtTheEnd);
+
+    const colClass = isAvailable ? "active" : undefined;
     board.push(
       <Column
         colIndex={index}
+        colClass={colClass}
         key={index}
         mPosition={gS.mPositions[index]}
         sPosition={gS.sPositions[index]}
@@ -15,29 +30,39 @@ const Board = ({ gS }) => {
   }
   return (
     <>
-      <div id="heav-score" key="-1" className={gS.isHCP && "border"}>
-        {" "}
-        Heaven <br /> {gS.score.heaven}{" "}
-      </div>
-      <div id="hell-score" className={gS.isHCP ? undefined : "border"} key="0">
-        {" "}
-        Hell <br /> {gS.score.hell}{" "}
-      </div>
-      <div>
-        <p id="score-board">
-          Hell <span> {hl} </span> - <span>{" " + hn} </span> Heaven
-        </p>
-      </div>
-      <div id="board">
-        <div id="real-board" className={gS.isHCP ? "heaven" : "hell"}>
-          {board}
+      <div id="fixer">
+        <div
+          id="heav-score"
+          key="-1"
+          className={gS.isHCP ? "border" : undefined}
+        >
+          {" "}
+          Heaven <br /> {gS.score.heaven}{" "}
+        </div>
+        <div
+          id="hell-score"
+          className={gS.isHCP ? undefined : "border"}
+          key="0"
+        >
+          {" "}
+          Hell <br /> {gS.score.hell}{" "}
+        </div>
+        <div>
+          <p id="score-board">
+            Hell <span> {hlw} </span> - <span>{" " + hnw} </span> Heaven
+          </p>
+        </div>
+        <div id="board">
+          <div id="real-board" className={gS.isHCP ? "heaven" : "hell"}>
+            {board}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-const Column = ({ colIndex, mPosition, sPosition }) => {
+const Column = ({ colIndex, colClass, mPosition, sPosition }) => {
   let size = 2;
   [3, 7].includes(colIndex) && (size = size + 2);
   [4, 6].includes(colIndex) && (size = size + 4);
@@ -69,7 +94,7 @@ const Column = ({ colIndex, mPosition, sPosition }) => {
   }
 
   return (
-    <div className="columna">
+    <div className={`columna ${colClass}`}>
       {circulos}
       <Meeple key="0" type="shadow" colNumber={colIndex} position={sPosition} />
       <Meeple key="1" type="main" colNumber={colIndex} position={mPosition} />
