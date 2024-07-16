@@ -1,3 +1,16 @@
+function Title() {
+  return (
+    <header>
+      <h1>Soul Struggle</h1>
+      <h2>
+        A push-your-luck game for two players strongly based on Can't Stop by
+        Sid Sackson.
+      </h2>
+      <p>Get three souls for your team and win.</p>
+    </header>
+  );
+}
+
 const StartButton = ({ ini }) => {
   return (
     <button id="start" onClick={ini}>
@@ -6,4 +19,11 @@ const StartButton = ({ ini }) => {
   );
 };
 
-export default StartButton;
+export default function Inicio({ ini }) {
+  return (
+    <>
+      <Title />
+      <StartButton ini={ini} />
+    </>
+  );
+}
