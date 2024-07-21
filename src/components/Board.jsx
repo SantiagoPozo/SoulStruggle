@@ -1,4 +1,8 @@
-const Board = ({ gS }) => {
+import React from "react";
+import { useGameContext } from "./GameContext";
+
+const Board = () => {
+  const { gS } = useGameContext();
   const hnw = gS.winCount.heaven;
   const hlw = gS.winCount.hell;
   const board = [];
@@ -10,8 +14,8 @@ const Board = ({ gS }) => {
     );
     const end = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
     const isAtTheEnd =
-      (gS.isHCP && gS.sPositions[index] === end[index]) ||
-      (!gS.isHCP && gS.sPositions[index] === -end[index]);
+      (gS.isHT && gS.sPositions[index] === end[index]) ||
+      (!gS.isHT && gS.sPositions[index] === -end[index]);
     const isActive = gS.active[index];
     const isAvailable =
       (numOfAcCols < 2 && !isAtTheEnd) ||
@@ -34,16 +38,12 @@ const Board = ({ gS }) => {
         <div
           id="heav-score"
           key="-1"
-          className={gS.isHCP ? "border" : undefined}
+          className={gS.isHT ? "border" : undefined}
         >
           {" "}
           Heaven <br /> {gS.score.heaven}{" "}
         </div>
-        <div
-          id="hell-score"
-          className={gS.isHCP ? undefined : "border"}
-          key="0"
-        >
+        <div id="hell-score" className={gS.isHT ? undefined : "border"} key="0">
           {" "}
           Hell <br /> {gS.score.hell}{" "}
         </div>
@@ -53,7 +53,7 @@ const Board = ({ gS }) => {
           </p>
         </div>
         <div id="board">
-          <div id="real-board" className={gS.isHCP ? "heaven" : "hell"}>
+          <div id="real-board" className={gS.isHT ? "heaven" : "hell"}>
             {board}
           </div>
         </div>
@@ -111,9 +111,9 @@ const Meeple = ({ type, colNumber, position }) => {
   // por encima de earth y por debajo de earth.
 
   let yCoord = type === "main" ? 2 : 1;
-  yCoord += -39 * increment;
+  yCoord += -36 * increment;
 
-  const xCoord = type === "main" ? 10 : 20;
+  const xCoord = type === "main" ? 4 : 16;
   const className = type === "main" ? "main meeple" : "shadow meeple";
   const id =
     type === "main" ? `meeple-main${colNumber}` : `meeple-shadow${colNumber}`;

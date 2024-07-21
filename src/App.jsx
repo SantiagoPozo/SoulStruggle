@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
+import { GameProvider, useGameContext } from "./components/GameContext";
 import Inicio from "./components/Inicio";
 import Board from "./components/Board";
 import Panel from "./components/Panel";
@@ -13,43 +13,25 @@ const resizeBodyHeight = () => {
 window.addEventListener("load", resizeBodyHeight);
 window.addEventListener("resize", resizeBodyHeight);
 
-export const valuesAtTheBeginning = {
-  gameID: 0,
-  isGameStarted: false,
-  isGameOver: false,
-  isHCP: true, // Is Heaven Current Player?
-  move: 0, // Some moves make a turn.
-  turn: 0, // when passed o fail, end a turn.
-  roll: [],
-  score: {
-    hell: 0,
-    heaven: 0,
-  },
-  winner: undefined,
-  winCount: {
-    hell: 0,
-    heaven: 0,
-  },
-  active: Array(9).fill(false, 2, 9),
-  mPositions: Array(9).fill(0, 2, 9), //main Meeples
-  sPositions: Array(9).fill(0, 2, 9), //shadow Meeples
-};
-
 const gC = {
   colsToWin: 3,
   diceSize: 4,
   posToPunc: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
-  //I'm not goint to make an adaptation for that with
+  //I'm not going to make an adaptation for that with
   // cols from 2  to 12, but it is an estimulating idea.
 };
 
 export default function App() {
-  const [gS, setGS] = useState({
-    ...valuesAtTheBeginning,
-  });
-  const [history, setHistory] = useState([]);
+  return (
+    <GameProvider>
+      <AppContent />
+    </GameProvider>
+  );
+}
 
-  // console.log("gS queda definido", gS);
+function AppContent() {
+  const { gS, setGS } = useGameContext();
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     updateScore();
@@ -60,21 +42,9 @@ export default function App() {
       ...prv,
       mPositions: [...nextPositions],
       active: Array(9).fill(false, 2, 9),
+      turn: prv.turn + 1,
+      move: 0,
     }));
-  };
-
-  const handleShadowPositions = (col) => {
-    setGS((prev) => {
-      const next = {
-        ...prev,
-        sPositions: [
-          ...prev.sPositions.slice(0, col),
-          prev.sPositions[col] + Math.pow(-1, !gS.isHCP),
-          ...prev.sPositions.slice(col + 1),
-        ],
-      };
-      return next;
-    });
   };
 
   const updateScore = () => {
@@ -120,11 +90,11 @@ export default function App() {
 
   const startGame = () => {
     setGS((prv) => {
-      const heavenStarts = !((prv.winCount.hell + prv.winCount.heaven) % 2);
+      const heavenStarts = !(prv.game % 2);
       const nxt = {
         ...prv,
         isGameStarted: true,
-        isHCP: heavenStarts,
+        isHT: heavenStarts,
         gameID: prv.gameID + 1,
       };
       return nxt;
@@ -141,25 +111,25 @@ export default function App() {
 
   if (gS.isGameStarted && !gS.isGameOver) {
     return (
-      <div id="gaming" class={gS.isHCP ? "heaven" : "hell"}>
-        <Board gS={gS} />
-        <Panel
-          updateProgress={updateProgress}
-          handleShadowPositions={handleShadowPositions}
-          setGS={setGS}
-          gS={gS}
-        />
+      <div id="gaming" className={gS.isHT ? "heaven" : "hell"}>
+        <Board />
+        <Panel />
       </div>
     );
   }
+
   if (gS.isGameOver) {
+    const hl = gS.winCount.hell,
+      hn = gS.winCount.heaven;
     return (
       <>
-        <VictoryMessage gS={gS} setGS={setGS} />
-        <Marcador hell={gS.winCount.hell} heaven={gS.winCount.heaven} />
+        <VictoryMessage />
+        <Marcador hell={hl} heaven={hn} />
       </>
     );
   }
+
+  return null; // Si no se cumple ninguna condición
 }
 
 const Marcador = ({ hell, heaven }) => {

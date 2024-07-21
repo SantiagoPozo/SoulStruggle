@@ -36,12 +36,15 @@ button#start {
 }
 #fixer {
   position: relative;
+  margin: 0;
+  padding: 0;
   order: 1;
 }
-/* 
 #panel {
-
+  border: 1px dashed #ddd;
+  order: 2;
 }
+/* 
 #panel.heaven {
 }
 
@@ -49,12 +52,12 @@ button#start {
 }
  */
 #board {
-  margin-top: 20px;
+  margin: 0;
 }
 #heav-score {
   position: absolute;
   top: 50px;
-  left: 60px;
+  left: 40px;
   width: 80px;
   font-size: 18pt;
   text-align: center;
@@ -72,7 +75,7 @@ button#start {
 #hell-score {
   position: absolute;
   top: 50px;
-  left: 410px;
+  left: 330px;
   width: 80px;
   font-size: 18pt;
   text-align: center;
@@ -111,7 +114,7 @@ button#start {
 .columna {
   margin: 6px;
   padding: 0;
-  width: 60px;
+  width: 50px;
   border-radius: 10px;
 }
 .heaven .columna.active {
@@ -140,11 +143,11 @@ p#score-board {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 45px;
+  width: 40px;
   height: 34px;
   padding: 0;
   border-radius: 18px;
-  margin: 5px;
+  margin: 2px;
   box-sizing: border-box;
 }
 
@@ -160,10 +163,11 @@ p#score-board {
 }
 
 .circle.hell.border {
-  border: 5px solid darkred;
+  border: 4px solid darkred;
 }
+
 .circle.heaven.border {
-  border: 5px solid darkslateblue;
+  border: 4px solid darkslateblue;
 }
 
 .circle.heaven.dominion {
@@ -200,33 +204,42 @@ p#score-board {
 
 #dadum {
   margin-top: 30px;
-}
-#dadum,
-#options {
   display: flex;
   justify-content: space-evenly;
-  width: 550px;
+  width: 450px;
+  margin-top: 10px;
 }
 
-#options {
-  margin-top: 20px;
+.in-game-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  width: 450px;
+  margin-top: 10px;
 }
 
-#options button {
+.in-game-buttons button {
   padding: 10px;
+  width: 100%;
   font-size: 16pt;
 }
 
+.disappear {
+  display: none;
+}
+
 .dado {
-  width: 80px;
-  height: 80px;
-  margin-left: 10px;
-  background-repeat: no-repeat;
-  background-size: cover; /* 'contain'  */
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#dadum .dado {
+  width: 78px;
+  height: 60px;
+  margin-left: 5px;
   font-size: 16pt;
   font-weight: bold;
   transition: transform 0.4s ease;
@@ -236,50 +249,135 @@ p#score-board {
   transform: rotate(1080deg);
 }
 
-#dadum.heaven .dado {
-  background-image: url("/src/img/triangle.png");
+.origin .dado {
+  width: 38px;
+  height: 18px;
+  font-size: 10pt;
+}
+
+.heaven .dado {
+  background-image: url("/src/img/white-dice.png");
   color: darkblue;
   padding-top: 10px;
 }
 
-#dadum.hell .dado {
-  background-image: url("/src/img/black-triangle.png");
+.hell .dado {
+  background-image: url("/src/img/black-dice.png");
   color: darkred;
   padding-bottom: 10px;
 }
+
 #dadum button {
   padding: 0 5px;
   font-size: 15pt;
 }
+.pair {
+  display: flex;
+}
 
+.dice-case {
+  display: flex;
+}
+
+.origin .dado {
+  background-repeat: no-repeat;
+  background-size: cover; /* 'contain'  */
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 30px;
+  font-size: 10pt;
+}
+
+.origin .dado {
+  padding: 0px;
+  padding-top: -25px;
+}
+
+.hell .pair .dado:first-child {
+  transform: rotate(-20deg);
+}
+.hell .pair .dado:nth-child(2) {
+  transform: rotate(25deg);
+  margin-left: -10px;
+}
+.pair .dado:first-child {
+  transform: rotate(10deg);
+}
+.heaven .pair .dado:nth-child(2) {
+  transform: rotate(-20deg);
+  margin-left: -10px;
+}
+
+/* 
+Victory 
+ */
 #victory-message {
-  font-size: 48pt;
+  font-size: 32pt;
   font-family: sans-serif;
-  position: absolute;
-  top: 150px;
   min-height: 600px;
+  height: 100vh;
+  width: 100%;
   cursor: pointer;
   border: 3px solid grey;
   border-radius: 20px;
-  padding: 24px;
   box-shadow: 6px -6px grey;
   text-align: center;
-}
-
-#victory-message.hell {
-  background-color: orange;
-}
-#victory-message.heaven {
-  background-color: #3498db;
-  background-image: url("/src/img/heaven.webp");
+  position: relative;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
-#victory-message.heaven div p {
-  text-shadow: 4px 4px 2px white, -4px -4px 2px white, 4px -4px 2px white;
+
+#victory-message.hell {
+  background-color: orange;
+  background-image: url("/src/img/demon.webp");
+}
+#victory-message.heaven {
+  background-color: #3498db;
+  background-image: url("/src/img/angel.webp");
+}
+#victory-message div {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  bottom: 0;
 }
 
+#victory-message.heaven div p {
+  text-shadow: 3px 3px 10px white, -3px -3px 5px white, 4px -4px 2px white;
+}
+
+#victory-message.hell div p {
+  color: white;
+  text-shadow: 3px 3px 3px orange, -3px -3px 3px orange, 3px -3px 3px red,
+    -3px 3px 3px orange;
+}
 #victory-message:hover {
   box-shadow: 1px -1px;
+}
+
+@media screen and (min-width: 900px) {
+  #gaming {
+    flex-direction: row;
+  }
+
+  #dadum,
+  .in-game-buttons {
+    flex-direction: column;
+    width: 120px;
+    align-items: center;
+    width: 150px;
+  }
+
+  .in-game-buttons button:not(:first-child) {
+    margin-top: 10px;
+  }
+
+  .option-button {
+    margin-bottom: 15px;
+  }
 }

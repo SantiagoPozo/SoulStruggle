@@ -3,8 +3,7 @@ function Title() {
     <header>
       <h1>Soul Struggle</h1>
       <h2>
-        A push-your-luck game for two players strongly based on Can't Stop by
-        Sid Sackson.
+        A push-your-luck game for two players strongly based on Can't Stop.
       </h2>
       <p>Get three souls for your team and win.</p>
     </header>
