@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { GameProvider, useGameContext } from "./components/GameContext";
 import Inicio from "./components/Inicio";
 import Board from "./components/Board";
-import Panel from "./components/Panel";
+// import Panel from "./components/Panel";
+import Fanel from "./components/Fanel";
 import VictoryMessage from "./components/Victory";
 import "./App.css";
 
@@ -31,7 +32,7 @@ export default function App() {
 
 function AppContent() {
   const { gS, setGS } = useGameContext();
-  const [history, setHistory] = useState([]);
+  // const [history, setHistory] = useState([]);}
 
   useEffect(() => {
     updateScore();
@@ -113,7 +114,7 @@ function AppContent() {
     return (
       <div id="gaming" className={gS.isHT ? "heaven" : "hell"}>
         <Board />
-        <Panel />
+        <Fanel />
       </div>
     );
   }

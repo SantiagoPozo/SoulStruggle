@@ -224,7 +224,8 @@ p#score-board {
 }
 
 .disappear {
-  display: none;
+  /* display: none; */
+  background-color: red;
 }
 
 .dado {

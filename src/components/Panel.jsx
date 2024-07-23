@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useGameContext } from "./GameContext";
+import LostTurn from "./Tools";
 
 const rollDx = (x) => Math.floor(x * Math.random() + 1);
 //Math.random devuelve un valor en [0, 1)
 
 const randomFace = () => {
-  const f = ["🙁", "😕", "😢", "😖", "😱", "😤", "😠", "🤬", "😓"];
-  return f[Math.floor(9 * Math.random())];
+  const f = ["🙁", "😕", "😢", "😖", "😱", "😤", "😠", "🤬", "😓", "😐"];
+  return f[Math.floor(f.length * Math.random())];
 };
 
 const Dado = (props) => (
@@ -15,39 +16,100 @@ const Dado = (props) => (
   </div>
 );
 
-const Panel = () => {
+/***********************************
+ ******   OptionDiv. A component
+ **********************************/
+const OptionDiv = ({ array }) => {
   const { gS, setGS } = useGameContext();
 
-  /****************************
-   ******   Inner Component
-   *****************************/
-  const LostTurn = () => (
+  const [o1, o2, d1, d2, d3, d4] = array;
+
+  return (
+    <div className="origin">
+      <div className="dice-case">
+        <div id="first-pair" className="pair">
+          <Dado key="0" number={d1} />
+          <Dado key="1" number={d2} />
+        </div>{" "}
+        <div id="second-pair" className="pair">
+          <Dado key="2" number={d3} />
+          <Dado key="3" number={d4} />
+        </div>
+      </div>
+      <Bton key="0" o1={o1} o2={o2} />
+    </div>
+  );
+};
+
+/***********************************
+ ******   Bton. A component.
+ **********************************/
+const Bton = ({ o1, o2, children, disabled }) => {
+  const { gS, setGS } = useGameContext();
+  const updateActivity = (colIndex) => {
+    setGS((prv) => {
+      const nxt = {
+        ...prv,
+        active: [
+          ...prv.active.slice(0, colIndex),
+          true,
+          ...prv.active.slice(colIndex + 1),
+        ],
+      };
+      return nxt;
+    });
+  };
+
+  const moveOneStepShadowMeeple = (col) => {
+    setGS((prev) => {
+      const next = {
+        ...prev,
+        sPositions: [
+          ...prev.sPositions.slice(0, col),
+          prev.sPositions[col] + Math.pow(-1, !gS.isHT),
+          ...prev.sPositions.slice(col + 1),
+        ],
+      };
+      return next;
+    });
+  };
+
+  return (
     <button
+      className={"option-button"}
       onClick={() => {
-        setGS((prev) => {
-          const next = {
-            ...prev,
-            sPositions: [...prev.mPositions.slice()],
-            isHT: !prev.isHT,
-            active: Array(9).fill(false, 2, 9),
-            turn: prev.turn + 1,
-            move: 0,
-            isRollDicePhase: true,
-          };
-          return next;
-        });
+        if (o1) {
+          moveOneStepShadowMeeple(o1);
+          updateActivity(o1);
+        }
+        if (o2) {
+          moveOneStepShadowMeeple(o2);
+          updateActivity(o2);
+        }
+
+        setGS((prv) => ({
+          ...prv,
+          move: prv.move + 1,
+          isRollDicePhase: true,
+        }));
       }}
+      disabled={disabled}
     >
-      Lost turn!
+      {o1 ? o1 : randomFace()} {o1 && o2 && " & "} {o2 ? o2 : randomFace()}
+      {children}
     </button>
   );
+};
+
+export default function Panel() {
+  const { gS, setGS } = useGameContext();
+
   const [dados, setDados] = useState([0, 0, 0, 0]);
   const roll4Dice = () =>
     setDados([rollDx(4), rollDx(4), rollDx(4), rollDx(4)]);
 
   // setDados([1, 1, 1, 1]);
 
-  const className = gS.isHT ? "heaven" : "hell";
   const isActiveColumn = gS.active; // Array. From 2 to 9 shows true or false
 
   const options = [
@@ -79,91 +141,21 @@ const Panel = () => {
 
   let numOfActiveCols = isActiveColumn.filter((item) => item === true).length;
 
-  /***********************************
-   ******   OptionDiv. A component
-   **********************************/
-  const OptionDiv = ({ array }) => {
-    const updateActivity = (colIndex) => {
-      setGS((prv) => {
-        const nxt = {
-          ...prv,
-          active: [
-            ...prv.active.slice(0, colIndex),
-            true,
-            ...prv.active.slice(colIndex + 1),
-          ],
-        };
-        return nxt;
-      });
-    };
-
-    const moveOneStepShadowMeeple = (col) => {
-      setGS((prev) => {
-        const next = {
-          ...prev,
-          sPositions: [
-            ...prev.sPositions.slice(0, col),
-            prev.sPositions[col] + Math.pow(-1, !gS.isHT),
-            ...prev.sPositions.slice(col + 1),
-          ],
-        };
-        return next;
-      });
-    };
-    const [o1, o2, d1, d2, d3, d4] = array;
-
-    return (
-      <div className={gS.isHT ? "origin heaven" : "origin hell"}>
-        <div className="dice-case">
-          <div id="first-pair" className="pair">
-            <Dado key="0" number={d1} />
-            <Dado key="1" number={d2} />
-          </div>{" "}
-          &
-          <div id="second-pair" className="pair">
-            <Dado key="2" number={d3} />
-            <Dado key="3" number={d4} />
-          </div>
-        </div>
-        <button
-          className={"option-button"}
-          onClick={() => {
-            if (o1) {
-              moveOneStepShadowMeeple(o1);
-              updateActivity(o1);
-            }
-            if (o2) {
-              moveOneStepShadowMeeple(o2);
-              updateActivity(o2);
-            }
-
-            setGS((prv) => ({
-              ...prv,
-              move: prv.move + 1,
-              isRollDicePhase: true,
-            }));
-          }}
-        >
-          {o1 ? o1 : randomFace()} {o2 ? " & " + o2 : randomFace()}
-        </button>
-      </div>
-    );
-  };
-
-  const isXColAvailable = (x, isHeavenTurn) => {
+  const isXColAvailable = (x) => {
     // Evaluate col x
 
     const last = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
     const NTLast = [undefined, undefined, 1, 3, 5, 7, 5, 3, 1];
+    const isHT = gS.isHT;
 
     const shadowIsLast =
-      (isHeavenTurn && gS.sPositions[x] === last[x]) ||
-      (!isHeavenTurn && gS.sPositions[x] === -last[x]);
+      (isHT && gS.sPositions[x] === last[x]) ||
+      (!isHT && gS.sPositions[x] === -last[x]);
     // console.log("Está shadow al final?: ", shadowIsLast);
 
     const shadowIsNextToLast =
-      (isHeavenTurn && gS.sPositions[x] === NTLast[x]) ||
-      (!isHeavenTurn && gS.sPositions[x] === -NTLast[x]);
+      (isHT && gS.sPositions[x] === NTLast[x]) ||
+      (!isHT && gS.sPositions[x] === -NTLast[x]);
 
     const answer = [!shadowIsLast, !shadowIsLast && !shadowIsNextToLast];
     // answer returns
@@ -174,33 +166,129 @@ const Panel = () => {
   };
 
   const multipliedOptions = [];
+  const newOptions = [];
 
   /*******************************
    *  Feeding choseButtonList
    *******************************/
-  options.forEach((element) => {
-    const [a, b] = [element[0], element[1]];
+  let kei = 0,
+    areThereValidOptions = false;
+  options.forEach((option) => {
+    const [a, b] = [option[0], option[1]];
     const p = gS.isHT;
     const aFor1Step = isXColAvailable(a, p)[0];
     const aFor2Steps = isXColAvailable(a, p)[1];
     const bFor1Step = isXColAvailable(b, p)[0];
+
+    // A NEW DIRECTION //
+    const [c, d, e, f] = [option[2], option[3], option[4], option[5]];
 
     if (a === b) {
       if (
         numOfActiveCols <= 1 ||
         (numOfActiveCols === 2 && isActiveColumn[a])
       ) {
-        aFor2Steps && multipliedOptions.push(element);
-        aFor1Step &&
-          !aFor2Steps &&
-          multipliedOptions.push([
-            a,
-            false,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
+        if (aFor2Steps) {
+          multipliedOptions.push(option);
+          const op = (
+            <div key={kei} className="origin">
+              {/* change origin form option if possible */}
+              <div className="dice-case">
+                <div id="first-pair" className="pair">
+                  <Dado key="0" number={c} />
+                  <Dado key="1" number={d} />
+                </div>
+                <div id="second-pair" className="pair">
+                  <Dado key="2" number={e} />
+                  <Dado key="3" number={f} />
+                </div>
+              </div>
+              <div className="one-button">
+                <Bton key={kei} o1={c + d} o2={e + f}>
+                  2x Avanza en {c + d}
+                </Bton>
+              </div>
+            </div>
+          );
+          newOptions.push(op);
+          kei++;
+          areThereValidOptions = true;
+        }
+
+        if (aFor1Step && !aFor2Steps) {
+          multipliedOptions.push([a, false, c, d, e, f]);
+
+          const op = (
+            <div key={kei} className="origin">
+              <div className="dice-case">
+                <div id="first-pair" className="pair">
+                  <Dado key="0" number={c} />
+                  <Dado key="1" number={d} />
+                </div>
+                <div id="second-pair" className="pair">
+                  <Dado key="2" number={e} />
+                  <Dado key="3" number={f} />
+                </div>
+              </div>
+              <div className="one-button">
+                <Bton key={kei} o1={a}>
+                  Avanza en {a}
+                </Bton>
+              </div>
+            </div>
+          );
+          newOptions.push(op);
+          kei++;
+          areThereValidOptions = true;
+
+          if (!aFor1Step) {
+            // fail
+            const op = (
+              <div key={kei} className="origin">
+                <div className="dice-case">
+                  <div id="first-pair" className="pair">
+                    <Dado key="0" number={c} />
+                    <Dado key="1" number={d} />
+                  </div>
+                  <div id="second-pair" className="pair">
+                    <Dado key="2" number={e} />
+                    <Dado key="3" number={f} />
+                  </div>
+                </div>
+                <div class="one-button">
+                  <Bton key="0" o1={a} o2={b} disabled={true}>
+                    Nada por aquí
+                  </Bton>
+                </div>
+              </div>
+            );
+            newOptions.push(op);
+            kei++;
+          }
+        } else {
+          // fail
+          const op = (
+            <div key={kei} className="origin">
+              <div className="dice-case">
+                <div id="first-pair" className="pair">
+                  <Dado key="0" number={c} />
+                  <Dado key="1" number={d} />
+                </div>
+                <div id="second-pair" className="pair">
+                  <Dado key="2" number={e} />
+                  <Dado key="3" number={f} />
+                </div>
+              </div>
+              <div class="one-button">
+                <Bton key="0" o1={a} o2={b} disabled={true}>
+                  Nada por aquí
+                </Bton>
+              </div>
+            </div>
+          );
+          newOptions.push(op);
+          kei++;
+        }
       }
     } else {
       // a != b
@@ -209,79 +297,163 @@ const Panel = () => {
         (numOfActiveCols === 1 && (isActiveColumn[a] || isActiveColumn[b])) ||
         (numOfActiveCols === 2 && isActiveColumn[a] && isActiveColumn[b])
       ) {
-        aFor1Step && bFor1Step && multipliedOptions.push(element);
-        aFor1Step &&
-          !bFor1Step &&
-          multipliedOptions.push([
-            a,
-            false,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
-        !aFor1Step &&
-          bFor1Step &&
-          multipliedOptions.push([
-            false,
-            b,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
+        if (aFor1Step && bFor1Step) {
+          multipliedOptions.push(option);
+
+          const op = (
+            <div key={kei} className="origin">
+              <div className="dice-case">
+                <div id="first-pair" className="pair">
+                  <Dado key="0" number={c} />
+                  <Dado key="1" number={d} />
+                </div>
+                <div id="second-pair" className="pair">
+                  <Dado key="2" number={e} />
+                  <Dado key="3" number={f} />
+                </div>
+              </div>
+              <div className="one-button">
+                <Bton o1={c + d} o2={e + f}>
+                  {" "}
+                  Avanza en {c + d} y {e + f}{" "}
+                </Bton>
+              </div>
+            </div>
+          );
+          newOptions.push(op);
+          kei++;
+          areThereValidOptions = true;
+        }
+        if (aFor1Step + bFor1Step == 1) {
+          if (bFor1Step) {
+            a = b;
+            b = false;
+          }
+          multipliedOptions.push([a, b, c, d, e, f]);
+          const op = (
+            <div key={kei} className="origin">
+              <div className="dice-case">
+                <div id="first-pair" className="pair">
+                  <Dado key="0" number={c} />
+                  <Dado key="1" number={d} />
+                </div>
+                <div id="second-pair" className="pair">
+                  <Dado key="2" number={e} />
+                  <Dado key="3" number={f} />
+                </div>
+              </div>
+              <div className="one-button">
+                <Bton o1={a} o2={b}>
+                  {" "}
+                  Avanza solo en {a}
+                </Bton>
+              </div>
+            </div>
+          );
+          newOptions.push(op);
+          kei++;
+          areThereValidOptions = true;
+        }
       }
 
       if (numOfActiveCols === 1 && !isActiveColumn[a] && !isActiveColumn[b]) {
-        aFor1Step &&
-          multipliedOptions.push([
-            a,
-            false,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
-        bFor1Step &&
-          multipliedOptions.push([
-            false,
-            b,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
+        aFor1Step && multipliedOptions.push([a, false, c, d, e, f]);
+        bFor1Step && multipliedOptions.push([false, b, c, d, e, f]);
+
+        const op = (
+          <div key={kei} className="origin">
+            {/* change origin form option if possible */}
+            <div className="dice-case">
+              <div id="first-pair" className="pair">
+                <Dado key="0" number={c} />
+                <Dado key="1" number={d} />
+              </div>
+              <div id="second-pair" className="pair">
+                <Dado key="2" number={e} />
+                <Dado key="3" number={f} />
+              </div>
+            </div>
+            <div class="two-buttons">
+              <Bton key={0} o1={a} o2={false}>
+                {" "}
+                Avanza en {a}{" "}
+              </Bton>
+              <Bton key={1} o1={b} o2={false}>
+                {" "}
+                Avanza en {b}{" "}
+              </Bton>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+        kei++;
+        areThereValidOptions = true;
       }
 
-      if (numOfActiveCols === 2 && isActiveColumn[a] && !isActiveColumn[b]) {
-        aFor1Step &&
-          multipliedOptions.push([
-            a,
-            false,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
+      if (
+        numOfActiveCols === 2 &&
+        ((isActiveColumn[a] && !isActiveColumn[b]) ||
+          (!isActiveColumn[a] && isActiveColumn[b]))
+      ) {
+        aFor1Step && multipliedOptions.push([a, false, c, d, e, f]);
+
+        if (isActiveColumn[b]) {
+          a = b;
+          b = false;
+        }
+
+        const op = (
+          <div key={kei} className="origin">
+            <div className="dice-case">
+              <div id="first-pair" className="pair">
+                <Dado key="0" number={c} />
+                <Dado key="1" number={d} />
+              </div>
+              <div id="second-pair" className="pair">
+                <Dado key="2" number={e} />
+                <Dado key="3" number={f} />
+              </div>
+            </div>
+            <div class="one-button">
+              <Bton key={0} o1={a} o2={false}>
+                {" "}
+                Avanza en {a}{" "}
+              </Bton>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+        kei++;
+        areThereValidOptions = true;
       }
 
-      if (numOfActiveCols === 2 && !isActiveColumn[a] && isActiveColumn[b]) {
-        bFor1Step &&
-          multipliedOptions.push([
-            false,
-            b,
-            element[2],
-            element[3],
-            element[4],
-            element[5],
-          ]);
+      if (numOfActiveCols === 2 && !isActiveColumn[a] && !isActiveColumn[b]) {
+        const op = (
+          <div key={kei} className="origin">
+            <div className="dice-case">
+              <div id="first-pair" className="pair">
+                <Dado key="0" number={c} />
+                <Dado key="1" number={d} />
+              </div>
+              <div id="second-pair" className="pair">
+                <Dado key="2" number={e} />
+                <Dado key="3" number={f} />
+              </div>
+            </div>
+            <div class="one-button">
+              <Bton key="0" o1={a} o2={b} disabled={true}>
+                Nada por aquí
+              </Bton>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+        kei++;
       }
     }
   });
 
-  // console.log("numOfActiveCols: ", numOfActiveCols);
   let k = 0;
-
   const aux = new Set(multipliedOptions);
   let unique = [...aux];
 
@@ -294,16 +466,17 @@ const Panel = () => {
   choseButtonList.length === 0 &&
     !gS.isRollDicePhase &&
     choseButtonList.push(<LostTurn key="0" />);
-  const par = gS.move % 2 ? "par" : undefined;
+  const par = gS.move % 4 ? "par" : undefined;
 
   return (
     <div id="panel" className={gS.isHT ? "heaven" : "hell"}>
-      <div id="dadum" className={className}>
+      <div id="dadum">
         <Dado id="dado0" className={par} key={"0"} number={dados[0]} />
         <Dado id="dado1" className={par} key={"1"} number={dados[1]} />
         <Dado id="dado2" className={par} key={"2"} number={dados[2]} />
         <Dado id="dado3" className={par} key={"3"} number={dados[3]} />
       </div>
+
       <div className="in-game-buttons">
         <button
           id="roll-button"
@@ -350,8 +523,7 @@ const Panel = () => {
       >
         {choseButtonList}
       </div>
+      <div id="show">{newOptions}</div>
     </div>
   );
-};
-
-export default Panel;
+}

@@ -1,9 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
-
-// Creamos el contexto.
 export const GameContext = createContext();
 
-// Valores iniciales del juego
+// Initial values of the game
 export const valuesAtTheBeginning = {
   game: 0,
   move: 0, // Some moves make a turn.
@@ -12,7 +10,7 @@ export const valuesAtTheBeginning = {
   isGameOver: false,
   isHT: true, // Is Heaven's turn?
   isRollDicePhase: true,
-  roll: [],
+  roll: [0, 0, 0, 0],
   score: {
     hell: 0,
     heaven: 0,
