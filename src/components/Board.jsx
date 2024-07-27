@@ -34,6 +34,10 @@ const Board = () => {
   }
   return (
     <>
+      <p id="score-board">
+        Hell <span> {hlw} </span> - <span>{" " + hnw} </span> Heaven
+      </p>
+
       <div id="fixer">
         <div
           id="heav-score"
@@ -47,11 +51,7 @@ const Board = () => {
           {" "}
           Hell <br /> {gS.score.hell}{" "}
         </div>
-        <div>
-          <p id="score-board">
-            Hell <span> {hlw} </span> - <span>{" " + hnw} </span> Heaven
-          </p>
-        </div>
+        <div></div>
         <div id="board">
           <div id="real-board" className={gS.isHT ? "heaven" : "hell"}>
             {board}
@@ -96,8 +96,13 @@ const Column = ({ colIndex, colClass, mPosition, sPosition }) => {
   return (
     <div className={`columna ${colClass}`}>
       {circulos}
-      <Meeple key="0" type="shadow" colNumber={colIndex} position={sPosition} />
-      <Meeple key="1" type="main" colNumber={colIndex} position={mPosition} />
+      <Meeple
+        key="ms"
+        type="shadow"
+        colNumber={colIndex}
+        position={sPosition}
+      />
+      <Meeple key="mm" type="main" colNumber={colIndex} position={mPosition} />
     </div>
   );
 };

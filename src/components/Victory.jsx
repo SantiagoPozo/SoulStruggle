@@ -15,7 +15,7 @@ const VictoryMessage = () => {
       const nxt = {
         ...valuesAtTheBeginning,
         game: prv.game + 1,
-        isHT: (prv.game + 1) / 2 === 0,
+        isHT: prv.game / 2 === 0,
         isGameStarted: true,
         winCount: {
           hell: prv.winCount.hell,

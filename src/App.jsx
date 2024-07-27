@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { GameProvider, useGameContext } from "./components/GameContext";
 import Inicio from "./components/Inicio";
 import Board from "./components/Board";
-// import Panel from "./components/Panel";
 import Fanel from "./components/Fanel";
 import VictoryMessage from "./components/Victory";
-import "./App.css";
+import "./style.sass";
 
 const resizeBodyHeight = () => {
   const h = window.innerHeight;
@@ -17,9 +16,9 @@ window.addEventListener("resize", resizeBodyHeight);
 const gC = {
   colsToWin: 3,
   diceSize: 4,
-  posToPunc: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
-  //I'm not going to make an adaptation for that with
-  // cols from 2  to 12, but it is an estimulating idea.
+  puncPos: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
+  //I'm not going to make an adaptation with
+  // cols from 2  to 12 and d6 dice, but it is an estimulating idea.
 };
 
 export default function App() {
@@ -56,8 +55,8 @@ function AppContent() {
       winner = undefined;
 
     for (let n = 2; n < gS.mPositions.length; n++) {
-      if (gS.mPositions[n] >= +gC.posToPunc[n]) hv++;
-      if (gS.mPositions[n] <= -gC.posToPunc[n]) hl++;
+      if (gS.mPositions[n] >= +gC.puncPos[n]) hv++;
+      if (gS.mPositions[n] <= -gC.puncPos[n]) hl++;
     }
 
     if (hv >= gC.colsToWin) {
@@ -96,7 +95,7 @@ function AppContent() {
         ...prv,
         isGameStarted: true,
         isHT: heavenStarts,
-        gameID: prv.gameID + 1,
+        game: prv.game + 1,
       };
       return nxt;
     });
@@ -113,8 +112,8 @@ function AppContent() {
   if (gS.isGameStarted && !gS.isGameOver) {
     return (
       <div id="gaming" className={gS.isHT ? "heaven" : "hell"}>
-        <Board />
-        <Fanel />
+        <Board key="board" />
+        <Fanel key="fanel" />
       </div>
     );
   }
@@ -124,8 +123,8 @@ function AppContent() {
       hn = gS.winCount.heaven;
     return (
       <>
-        <VictoryMessage />
-        <Marcador hell={hl} heaven={hn} />
+        <VictoryMessage key="v" />
+        <Marcador key="m" hell={hl} heaven={hn} />
       </>
     );
   }

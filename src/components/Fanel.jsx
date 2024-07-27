@@ -5,88 +5,16 @@ import { LostTurn, DiceCase, Dado } from "./Tools";
 const rollDx = (x) => Math.floor(x * Math.random() + 1);
 //Math.random devuelve un valor en [0, 1)
 
-const randomFace = () => {
-  const f = ["🙁", "😕", "😢", "😖", "😱", "😤", "😠", "🤬", "😓", "😐"];
-  return f[Math.floor(f.length * Math.random())];
-};
-
-/***********************************
- ******   OptionDiv. A component
- **********************************/
-const OptionDiv = ({ array }) => {
-  const { gS, setGS } = useGameContext();
-
-  const [o1, o2, d1, d2, d3, d4] = array;
-
-  return (
-    <div className="origin">
-      <div className="dice-case">
-        <div id="first-pair" className="pair">
-          <Dado key="0" number={d1} />
-          <Dado key="1" number={d2} />
-        </div>{" "}
-        <div id="second-pair" className="pair">
-          <Dado key="2" number={d3} />
-          <Dado key="3" number={d4} />
-        </div>
-      </div>
-      <Bton key="0" o1={o1} o2={o2} />
-    </div>
-  );
-};
-
 /***********************************
  ******   Bton. A component.
  **********************************/
-const Bton = ({ o1, o2, children, disabled }) => {
-  const { gS, setGS } = useGameContext();
-  const updateActivity = (colIndex) => {
-    setGS((prv) => {
-      const nxt = {
-        ...prv,
-        active: [
-          ...prv.active.slice(0, colIndex),
-          true,
-          ...prv.active.slice(colIndex + 1),
-        ],
-      };
-      return nxt;
-    });
-  };
-
-  const moveOneStepShadowMeeple = (col) => {
-    setGS((prev) => {
-      const next = {
-        ...prev,
-        sPositions: [
-          ...prev.sPositions.slice(0, col),
-          prev.sPositions[col] + Math.pow(-1, !gS.isHT),
-          ...prev.sPositions.slice(col + 1),
-        ],
-      };
-      return next;
-    });
-  };
+const Bton = ({ o1 = false, o2 = false, children, disabled }) => {
+  const { setGS, advanceShadows } = useGameContext();
 
   return (
     <button
       className={"option-button"}
-      onClick={() => {
-        if (o1) {
-          moveOneStepShadowMeeple(o1);
-          updateActivity(o1);
-        }
-        if (o2) {
-          moveOneStepShadowMeeple(o2);
-          updateActivity(o2);
-        }
-
-        setGS((prv) => ({
-          ...prv,
-          move: prv.move + 1,
-          isRollDicePhase: true,
-        }));
-      }}
+      onClick={() => advanceShadows(o1, o2)}
       disabled={disabled}
     >
       {children}
@@ -95,46 +23,38 @@ const Bton = ({ o1, o2, children, disabled }) => {
 };
 
 export default function Fanel() {
-  const { gS, setGS } = useGameContext();
+  const { gS, setGS, advanceShadows } = useGameContext();
 
   const [d, setDados] = useState([0, 0, 0, 0]);
   const roll4Dice = () =>
     setDados([rollDx(4), rollDx(4), rollDx(4), rollDx(4)]);
 
-  // setDados([1, 1, 1, 1]);
-
   const isActiveColumn = gS.active; // Array. From 2 to 9 shows true or false
 
-  const options = [
-    [d[0] + d[1], d[2] + d[3], d[0], d[1], d[2], d[3]],
-    [d[0] + d[2], d[1] + d[3], d[0], d[2], d[1], d[3]],
-    [d[0] + d[3], d[1] + d[2], d[0], d[3], d[1], d[2]],
-  ];
+  const areEquivalents = (arr, brr) => {
+    // Compare options
+    if (arr[0] === brr[0] && arr[1] === brr[1]) return true;
+    if (arr[0] === brr[1] && arr[1] === brr[0]) return true;
+    return false;
+  };
 
-  let numOfActiveCols = isActiveColumn.filter((item) => item === true).length;
+  // constructions of optiones.
+  // every options contein addition 1, adition 2, dice 1, dice 2, dice 3, dice 4.
 
-  const isXColAvailable = (x) => {
-    // Evaluate col x
+  const op1 = [d[0] + d[1], d[2] + d[3], d[0], d[1], d[2], d[3]];
+  const options = [op1];
+  const op2 = [d[0] + d[2], d[1] + d[3], d[0], d[2], d[1], d[3]];
+  !areEquivalents(op1, op2) && options.push(op2);
+  const op3 = [d[0] + d[3], d[1] + d[2], d[0], d[3], d[1], d[2]];
+  !areEquivalents(op1, op3) && !areEquivalents(op2, op3) && options.push(op3);
 
+  const num = isActiveColumn.filter((item) => item === true).length; // number of active columns
+
+  const distToEnd = (x) => {
     const last = [undefined, undefined, 2, 4, 6, 8, 6, 4, 2];
-    const NTLast = [undefined, undefined, 1, 3, 5, 7, 5, 3, 1];
-    const isHT = gS.isHT;
-
-    const shadowIsLast =
-      (isHT && gS.sPositions[x] === last[x]) ||
-      (!isHT && gS.sPositions[x] === -last[x]);
-    // console.log("Está shadow al final?: ", shadowIsLast);
-
-    const shadowIsNextToLast =
-      (isHT && gS.sPositions[x] === NTLast[x]) ||
-      (!isHT && gS.sPositions[x] === -NTLast[x]);
-
-    const answer = [!shadowIsLast, !shadowIsLast && !shadowIsNextToLast];
-    // answer returns
-    // [0] » x col is available for 1 step ? (true or false)
-    // [1] » x col is available for 2 steps? (true or false)
-
-    return answer;
+    const t = gS.isHT;
+    const dist = t ? last[x] - gS.sPositions[x] : last[x] + gS.sPositions[x];
+    return dist;
   };
 
   const newOptions = [];
@@ -142,259 +62,308 @@ export default function Fanel() {
   /*******************************
    *  Feeding choseButtonList
    *******************************/
-  let kei = 0,
+  let index = 0,
     areThereValidOptions = false;
 
-  options.forEach((option) => {
-    const [a, b] = [option[0], option[1]];
-    const p = gS.isHT;
-    const aFor1Step = isXColAvailable(a, p)[0];
-    const aFor2Steps = isXColAvailable(a, p)[1];
-    const bFor1Step = isXColAvailable(b, p)[0];
+  options.forEach((o) => {
+    const [a, b, c, d, e, f] = [o[0], o[1], o[2], o[3], o[4], o[5]];
+    console.log("************ COMBINATION:", a, ",", b, " ***************");
 
-    // A NEW DIRECTION //
-    const [c, d, e, f] = [option[2], option[3], option[4], option[5]];
+    /*     const aCanTake1Step = distToEnd(a) >= 1 ? true : false;
+    const aCanTake2Steps = distToEnd(a) >= 2 ? true : false;
+    const bCanTake1Step = distToEnd(b) >= 1; */
+    const isHT = gS.isHT;
+    const aDist = distToEnd(a),
+      bDist = distToEnd(b);
+    const aIsActv = isActiveColumn[a],
+      bIsActv = isActiveColumn[b];
 
+    console.log(
+      `a = ${a} -> aDist ${aDist} || b = ${b} -> bDist ${bDist} || a = ${a}: aIsActv ${aIsActv} || b = ${b}: bIsActv ${bIsActv}, || num ${num} `
+    );
+
+    /***********************
+     * a === b
+     **********************/
     if (a === b) {
-      if (
-        numOfActiveCols <= 1 ||
-        (numOfActiveCols === 2 && isActiveColumn[a])
-      ) {
-        if (aFor2Steps) {
-          const op = (
-            <div key={kei} className="origin">
-              <DiceCase fourNumberArray={[c, d, e, f]} />
-              <div className="one-button">
-                <Bton key={kei} o1={a} o2={b}>
-                  2x Avanza en {a}
-                </Bton>
-              </div>
-            </div>
-          );
-          newOptions.push(op);
-          kei++;
-          areThereValidOptions = true;
-        }
+      console.log("Inside a === b");
 
-        if (aFor1Step && !aFor2Steps) {
-          const op = (
-            <div key={kei} className="origin">
-              <DiceCase fourNumberArray={[c, d, e, f]} />
-              <div className="one-button">
-                <Bton key={kei} o1={a}>
-                  Avanza en {a}
-                </Bton>
-              </div>
-            </div>
-          );
-          newOptions.push(op);
-          kei++;
-          areThereValidOptions = true;
-
-          if (!aFor1Step) {
-            // fail
-            const op = (
-              <div key={kei} className="origin">
-                <DiceCase fourNumberArray={[c, d, e, f]} />
-                <div class="one-button">
-                  <Bton key="0" o1={a} o2={b} disabled={true}>
-                    Nada por aquí
-                  </Bton>
-                </div>
-              </div>
-            );
-            newOptions.push(op);
-            kei++;
-          }
-        } else {
-          // fail
-          const op = (
-            <div key={kei} className="origin">
-              <DiceCase fourNumberArray={[c, d, e, f]} />
-              <div class="one-button">
-                <Bton key="0" o1={a} o2={b} disabled={true}>
-                  Nada por aquí
-                </Bton>
-              </div>
-            </div>
-          );
-          newOptions.push(op);
-          kei++;
-        }
-      }
-    } else {
-      // a != b
-      if (
-        numOfActiveCols === 0 ||
-        (numOfActiveCols === 1 && (isActiveColumn[a] || isActiveColumn[b])) ||
-        (numOfActiveCols === 2 && isActiveColumn[a] && isActiveColumn[b])
-      ) {
-        if (aFor1Step && bFor1Step) {
-          const op = (
-            <div key={kei} className="origin">
-              <DiceCase fourNumberArray={[c, d, e, f]} />
-              <div className="one-button">
-                <Bton o1={a} o2={b}>
-                  {" "}
-                  Avanza en {a} y {b}{" "}
-                </Bton>
-              </div>
-            </div>
-          );
-          newOptions.push(op);
-          kei++;
-          areThereValidOptions = true;
-        }
-        if (aFor1Step + bFor1Step == 1) {
-          let ta = a,
-            be = b;
-          if (bFor1Step) {
-            ta = b;
-            be = false;
-          }
-          const op = (
-            <div key={kei} className="origin">
-              <DiceCase fourNumberArray={[c, d, e, f]} />
-              <div className="one-button">
-                <Bton o1={ta} o2={be}>
-                  {" "}
-                  Avanza solo en {ta}
-                </Bton>
-              </div>
-            </div>
-          );
-          newOptions.push(op);
-          kei++;
-          areThereValidOptions = true;
-        }
-      }
-
-      if (numOfActiveCols === 1 && !isActiveColumn[a] && !isActiveColumn[b]) {
+      //Case 0
+      if (aDist === 0 || (aDist >= 1 && num === 2 && !aIsActv)) {
+        console.log(
+          `Dentro de (aDist === 0 || (aDist >= 1 && num === 2 && !aIsActv))`
+        );
+        // fail
+        index++;
         const op = (
-          <div key={kei} className="origin">
-            {/* change origin form option if possible */}
-            <DiceCase fourNumberArray={[c, d, e, f]} />
-            <div class="two-buttons">
-              <Bton key={0} o1={a} o2={false}>
-                {" "}
-                Avanza en {a}{" "}
-              </Bton>
-              <Bton key={1} o1={b} o2={false}>
-                {" "}
-                Avanza en {b}{" "}
-              </Bton>
+          <div className="option-div" key={`option-${index}`}>
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">
+              <p>Soul #{a} can't advance!</p>
             </div>
           </div>
         );
         newOptions.push(op);
-        kei++;
+      }
+
+      // case 1
+      if (aDist === 1 && (num <= 1 || aIsActv)) {
+        console.log("Case1: inside 'aDist === 1 && (num <= 1 || aIsActv)'");
+        // a available for a step.
+        const message = isHT
+          ? `Soul #${a} ascends a level`
+          : `Soul #${a} descends a level into a deepest dimension of fun`;
+
+        index++;
+        const op = (
+          <div
+            className="option-div like-a-button"
+            onClick={() => advanceShadows(a)}
+            key={`option-${index}`}
+          >
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">
+              <p>{message} </p>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
         areThereValidOptions = true;
       }
 
-      if (
-        numOfActiveCols === 2 &&
-        ((isActiveColumn[a] && !isActiveColumn[b]) ||
-          (!isActiveColumn[a] && isActiveColumn[b]))
-      ) {
-        let ta = a,
-          be = b;
-        if (isActiveColumn[b]) {
-          ta = b;
-          be = false;
-        }
+      // case 2
+      if (aDist >= 2 && (num <= 1 || aIsActv)) {
+        console.log("Inside case 2: '(aDist >= 2 && (num <= 1 || aIsActv))' ");
+        // a available for 2 steps
+        const message = isHT
+          ? `Soul #${a} ascends •• levels`
+          : `Soul #${a} descends •• levels`;
 
+        index++;
         const op = (
-          <div key={kei} className="origin">
-            <DiceCase fourNumberArray={[c, d, e, f]} />
-            <div class="one-button">
-              <Bton key={0} o1={ta} o2={be}>
-                {" "}
-                Avanza en {ta}{" "}
-              </Bton>
-            </div>
+          <div
+            className="option-div like-a-button"
+            onClick={() => advanceShadows(a, a)}
+            key={`option-${index}`}
+          >
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">{message}</div>
           </div>
         );
         newOptions.push(op);
-        kei++;
         areThereValidOptions = true;
-      }
-
-      if (numOfActiveCols === 2 && !isActiveColumn[a] && !isActiveColumn[b]) {
-        const op = (
-          <div key={kei} className="origin">
-            <DiceCase fourNumberArray={[c, d, e, f]} />
-            <div class="one-button">
-              <Bton key="0" o1={a} o2={b} disabled={true}>
-                Nada por aquí {randomFace()}
-              </Bton>
-            </div>
-          </div>
-        );
-        newOptions.push(op);
-        kei++;
       }
     }
-    console.log("areThereValidOptions: ", areThereValidOptions);
-    if (!areThereValidOptions) newOptions.push(LostTurn);
+
+    if (a !== b) {
+      /***************************
+       ********  a !== b  ********
+       ***************************/
+      console.log("Inside a !== b");
+
+      // Case 3. Fail.
+      if (
+        (aDist === 0 && bDist === 0) ||
+        (aDist === 0 && bDist >= 1 && !bIsActv && num >= 2) ||
+        (aDist >= 1 && bDist === 0 && !aIsActv && num >= 2) ||
+        (aDist >= 1 && bDist >= 1 && !aIsActv && !bIsActv && num === 2)
+      ) {
+        console.log(`Inside case 3 (fail): (
+        (aDist === 0 && bDist === 0) ||
+        (aDist === 0 && bDist >= 1 && !bIsActv && num >= 2) ||
+        (aDist >= 1 && bDist === 0 && !aIsActv && num >= 2) ||
+        (aDist >= 1 && bDist >= 1 && !aIsActv && !bIsActv && num === 2)
+      )`);
+        const message = "I will let repose these souls...";
+        index++;
+        const op = (
+          <div className="option-div" key={`option-${index}`}>
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">
+              <p>
+                <div key={`bton-${index}`}>{message}</div>
+              </p>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+      }
+
+      // Case 4: only a member moves. Context decides.
+      if (
+        (aDist === 0 && bDist > 0 && (bIsActv || (!bIsActv && num < 2))) ||
+        (aDist > 0 && bDist === 0 && (aIsActv || (!aIsActv && num < 2))) ||
+        (aDist > 0 && bDist > 0 && num === 2 && aIsActv ^ bIsActv)
+      ) {
+        console.log("Inside case 4");
+        let candidate = false;
+        aIsActv && aDist !== 0 && (candidate = a);
+        bIsActv && bDist !== 0 && (candidate = b);
+        if (!candidate) {
+          aDist > 0 && (candidate = a);
+          bDist > 0 && (candidate = b);
+        }
+
+        const message = isHT
+          ? `Salvation can be a step closer but only for #${candidate}`
+          : `A little bit of fun only for #${candidate}`;
+        index++;
+        const op = (
+          <div className="option-div" key={`option-${index}`}>
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              whoIsCandidate={candidate}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">
+              <p>{message} </p>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+        areThereValidOptions = true;
+      }
+
+      // Case 5
+      if (aDist * bDist > 0 && num === 1 && !aIsActv && !bIsActv) {
+        // chose a soul
+        console.log("Inside case 5. Choose a soul");
+
+        const message = isHT
+          ? "Only one of them goes to church..."
+          : "Which of these made some funny things?";
+
+        index++;
+        const op = (
+          <div className="option-div" key={`option-${index}`}>
+            <DiceCase fourNumberArray={[c, d, e, f]} fun={true} />
+            <div className="question"> {message} </div>
+          </div>
+        );
+        newOptions.push(op);
+        areThereValidOptions = true;
+      }
+
+      // case 6
+      if (
+        aDist * bDist > 0 &&
+        (num === 0 || (aIsActv && bIsActv) || (aIsActv ^ bIsActv && num === 1))
+      ) {
+        console.log(
+          "Inside case 6. Both. ",
+          "aDist * bDist > 0 && (num === 0 || (aIsActv && bIsActv) || (aIsActv ^ bIsActv && num === 1))"
+        );
+        const message = isHT
+          ? `#${a} and ${b} deserve to go to heaven`
+          : `Damnation for #${a} and #${b}`;
+        index++;
+        const op = (
+          <div
+            className="option-div like-a-button"
+            onClick={() => advanceShadows(a, b)}
+            key={`option-${index}`}
+          >
+            <DiceCase
+              key={`case-${index}`}
+              clave={`case-${index}`}
+              fourNumberArray={[c, d, e, f]}
+            />
+            <div className="message">
+              <p>{message} </p>
+            </div>
+          </div>
+        );
+        newOptions.push(op);
+        areThereValidOptions = true;
+      }
+    }
   });
 
-  const par = gS.move % 4 ? "par" : undefined;
+  console.log("areThereValidOptions: ", areThereValidOptions);
 
-  return (
-    <div id="panel" className={gS.isHT ? "heaven" : "hell"}>
-      <div id="dadum">
-        <Dado id="dado0" className={par} key={"0"} number={d[0]} />
-        <Dado id="dado1" className={par} key={"1"} number={d[1]} />
-        <Dado id="dado2" className={par} key={"2"} number={d[2]} />
-        <Dado id="dado3" className={par} key={"3"} number={d[3]} />
-      </div>
+  if (!areThereValidOptions) newOptions.push(<LostTurn key="lost" />);
 
-      <div className="in-game-buttons">
-        <button
-          id="roll-button"
-          className={!gS.isRollDicePhase ? "disappear" : undefined}
-          onClick={() => {
-            roll4Dice();
-            setGS((prv) => ({
-              ...prv,
-              roll: d,
-              move: prv.move + 1,
-              isRollDicePhase: false,
-            }));
-          }}
-        >
-          Roll the Dice
-        </button>
-        <button
-          id="pass-button"
-          className={
-            !gS.isRollDicePhase || gS.move === 0 ? "disappear" : undefined
-          }
-          onClick={() => {
-            setGS((prev) => {
-              const next = {
-                ...prev,
-                mPositions: [...prev.sPositions.slice()],
-                isHT: !prev.isHT,
-                active: Array(9).fill(false, 2, 9),
-                isRollDicePhase: true,
-                turn: prev.turn + 1,
-                move: 0,
-              };
-              return next;
-            });
-          }}
-        >
-          Pass
-        </button>
+  if (gS.isRollDicePhase) {
+    return (
+      <div id="panel" className={gS.isHT ? "heaven" : "hell"}>
+        <div id="dadum">
+          <Dado id="dado0" key="dado0" number={d[0]} />
+          <Dado id="dado1" key="dado1" number={d[1]} />
+          <Dado id="dado2" key="dado2" number={d[2]} />
+          <Dado id="dado3" key="dado3" number={d[3]} />
+        </div>
+
+        <div className="in-game-buttons">
+          <button
+            id="roll-button"
+            className={!gS.isRollDicePhase ? "disappear" : undefined}
+            onClick={() => {
+              roll4Dice();
+              document.getElementById("dadum").classList.toggle("par");
+
+              setGS((prv) => ({
+                ...prv,
+                roll: d,
+                move: prv.move + 1,
+                isRollDicePhase: false,
+              }));
+            }}
+          >
+            Roll the Dice
+          </button>
+
+          <button
+            id="pass-button"
+            className={gS.move === 0 ? "disappear" : undefined}
+            onClick={() => {
+              setGS((prev) => {
+                const next = {
+                  ...prev,
+                  mPositions: [...prev.sPositions.slice()],
+                  isHT: !prev.isHT,
+                  active: Array(9).fill(false, 2, 9),
+                  isRollDicePhase: true,
+                  turn: prev.turn + 1,
+                  move: 0,
+                };
+                return next;
+              });
+            }}
+          >
+            Pass
+          </button>
+        </div>
       </div>
-      <div
-        className={
-          gS.isRollDicePhase ? "in-game-buttons disappear" : "in-game-buttons"
-        }
-      >
+    );
+  } else {
+    return (
+      <div id="panel" className={gS.isHT ? "heaven" : "hell"}>
+        <div id="dadum">
+          <Dado id="dado0" key="dado0" number={d[0]} />
+          <Dado id="dado1" key="dado1" number={d[1]} />
+          <Dado id="dado2" key="dado2" number={d[2]} />
+          <Dado id="dado3" key="dado3" number={d[3]} />
+        </div>
+
         <div id="show">{newOptions}</div>
       </div>
-    </div>
-  );
+    );
+  }
 }
