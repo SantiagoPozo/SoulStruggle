@@ -20,7 +20,6 @@ header
   margin: 0
   @media screen and (max-width: 499px)
     transform: scale(0.73)
-  // @media screen and (min-width: 500px) and ()
 
 button#start
   font-size: 30pt
@@ -36,12 +35,14 @@ button#start
 
   @media screen and (min-width: 768px)
     flex-direction: row
-    justify-content: space-evenly
     width: 768px
+
+  @media screen and (max-width: 767px)
+    width: 520px
 
 #fixer
   position: relative
-  margin: 0 0 0 30px
+  margin: 0
   padding: 0
   order: 1
   display-grow: 0
@@ -51,67 +52,67 @@ button#start
 
 #heav-score
   position: absolute
-  top: 30px
-  left: 20px
-  width: 80px
-  font-size: 18pt
+  top: 24px
+  left: 16px
+  width: 60px
+  font-size: 14pt
   text-align: center
-  background-color: rgba(255, 255, 255, 0.5)
+  background-color: lighblue
   padding: 5px
   border-radius: 5px
   transition: box-shadow 0.5s ease
 
   &.border
-    box-shadow: 2px 2px 15px rgba(255, 255, 255, 1), 2px -2px 15px rgba(255, 255, 255, 1), 0px 2px 15px rgba(255, 255, 255, 1)
+    background: darkblue
+    color: white
 
 #hell-score
   position: absolute
-  bottom: 30px
-  right: 20px
-  width: 80px
-  font-size: 18pt
+  bottom: 24px
+  right: 16px
+  width: 60px
+  font-size: 14pt
   text-align: center
-  background-color: rgba(255, 255, 255, 0.5)
   border-radius: 5px
   padding: 5px
   transition: box-shadow 0.5s ease
 
   &.border
-    box-shadow: 2px 2px 15px rgba(0, 0, 0, 1), 2px -2px 15px rgba(0, 0, 0, 1), 0px 2px 15px rgba(0, 0, 0, 1)
+    background: darkred
+    color: white
 
 #real-board
   display: flex
   align-items: center
   justify-content: center
-  border: 10px solid darkblue
-  border-radius: 10px
   order: 1
 
   &.hell
-    border-color: darkred
-    background-color: orange
+    background: orange
 
   &.heaven
-    background-color: lightblue
+    background: lightblue
 
 .columna
-  margin: 6px
+  margin: 7px
   padding: 0
-  width: 50px
-  border-radius: 10px
+  width: 36px
+  border-radius: 12px
 
   .heaven &
     &.active
-      box-shadow: 2px 2px 15px rgba(255, 255, 255, 1), 2px -2px 15px rgba(255, 255, 255, 1)
+      // box-shadow: 3px -3px 1px lightblue, -1px 1px 1px lightblue
+      background-color: white
 
   .hell &
     &.active
-      box-shadow: 2px 2px 15px rgba(0, 0, 0, 1), 2px -2px 15px rgba(0, 0, 0, 1)
+      // box-shadow: 3px -3px 1px orange, -1px 1px 1px orange
+      background-color: white
 
 p#score-board
   position: absolute
   top: 0px
-  left: 0px
+  left: -40px
   font-size: 20pt
   text-align: center
   writing-mode: vertical-rl
@@ -124,17 +125,17 @@ p#score-board
   display: flex
   align-items: center
   justify-content: center
-  width: 45px
-  height: 34px
+  width: 32px
+  height: 24px
   padding: 0
-  border-radius: 18px
+  border-radius: 12px
   margin: 2px
   box-sizing: border-box
 
   &.heaven
     background-color: #3498db
     &.border
-      border: 4px solid darkslateblue
+      border: 3px solid darkslateblue
     &.dominion
       background-color: darkslateblue
 
@@ -144,7 +145,7 @@ p#score-board
   &.hell
     background-color: #db7734
     &.border
-      border: 4px solid darkred
+      border: 3px solid darkred
     &.dominion
       background-color: darkred
 
@@ -165,9 +166,7 @@ p#score-board
   transform: rotate(180deg)
 
 #panel
-  border: 10px solid #ddd
-  padding: 0 10px
-  border-radius: 10px
+  padding: 0
   order: 2
 
   button
@@ -176,33 +175,37 @@ p#score-board
     border-radius: 10px
     box-shadow: 0px 0px 12px grey
 
-  .hell & button:hover
-    box-shadow: 4px 4px 10px red, -4px -4px 10px orange
-    animation: glowing 5s infinite
-    @keyframes glowing
-      0%
-        box-shadow: 4px 4px 10px red, -4px -4px 10px orange
-      50%
-        box-shadow: 4px 4px 10px yellow, -4px -4px 10px yellow, -4px 4px 10px yellow, 4px -4px 10px yellow
-      100%
-        box-shadow: 4px 0px 10px red, -4px 0px 10px orange, 0px 4px 10px yellow, 0px -4px 10px pink
+    button:hover
+      box-shadow: 4px 4px 10px red, -4px -4px 10px orange
+      animation: glowing 5s infinite
+      @keyframes glowing
+        0%
+          box-shadow: 4px 4px 10px red, -4px -4px 10px orange
+        50%
+          box-shadow: 4px 4px 10px yellow, -4px -4px 10px yellow, -4px 4px 10px yellow, 4px -4px 10px yellow
+        100%
+          box-shadow: 4px 0px 10px red, -4px 0px 10px orange, 0px 4px 10px yellow, 0px -4px 10px pink
 
-  .heaven & button:hover
-    box-shadow: 4px -4px 10px purple, -4px 4px 10px turquoise
-    animation: glowing 5s infinite
-    @keyframes glowing
-      0%
-        box-shadow: 0px 0px 15px purple
-      50%
-        box-shadow: 4px 4px 10px lightblue, -4px -4px 10px lightblue, -4px 4px 10px lightblue, 4px -4px 10px lightblue
-      100%
-        box-shadow: 0px 0px 15px purple
+    button:hover
+      box-shadow: 4px -4px 10px purple, -4px 4px 10px turquoise
+      animation: glowing 5s infinite
+      @keyframes glowing
+        0%
+          box-shadow: 0px 0px 15px purple
+        50%
+          box-shadow: 4px 4px 10px lightblue, -4px -4px 10px lightblue, -4px 4px 10px lightblue, 4px -4px 10px lightblue
+        100%
+          box-shadow: 0px 0px 15px purple
+
+  @media screen and (max-width: 767px)
+    min-width: 510px
 
   @media screen and (min-width: 768px)
     flex-basis: 220px
     flex-grow: 0
     flex-shrink: 0
     padding-top: 20px
+    border-radius: 0 10px 10px 0
 
 #dadum
   margin: 5px 0
@@ -221,15 +224,17 @@ p#score-board
       // transform: rotate(-1080deg)
       transform: rotate3d(1, 1, 1, 1080deg)
   .dado
-    width: 78px
-    height: 68px
+    width: 60px
+    height: 49px
     margin-left: 5px
-    font-size: 16pt
+    font-size: 14pt
     font-weight: bold
     transition: transform 0.4s ease
+    @media screen and (min-width: 768px)
+      margin-left: 20px
 
     .heaven & div
-      margin-top: 30px
+      margin-top: 18px
 
     .hell & div
       margin-top: 10px
@@ -237,33 +242,33 @@ p#score-board
 .in-game-buttons
   display: flex
   justify-content: space-between
-  margin-top: 10px
+  margin-top: 8px
   @media screen and (min-width: 768px)
     flex-wrap: wrap
 
   button
     // Roll the dice // Pass //
-    padding: 10px
-    margin: 0 5px
-    font-size: 16pt
+    padding: 8px
+    margin: 0 4px
+    font-size: 15pt
     flex-basis: 240px
     flex-grow: 1
     background-color: white
     border-radius: 4px
 
     @media screen and (min-width: 768px)
-      flex-basis: 180px
-      margin: 0 10px
+      flex-basis: 160px
+      margin: 0 8px
       flex-shrink: 0
       flex-grow: 1
 
     &:not(:first-child)
       @media screen and (min-width: 768px)
-        margin-top: 10px
+        margin-top: 8px
 
   .option-button
     @media screen and (min-width: 768px)
-      margin-bottom: 15px
+      margin-bottom: 12px
 
 .disappear
   display: none
@@ -308,23 +313,23 @@ p#score-board
   box-shadow: 1px 1px 6px grey
 
 .option-div
-  flex-basis: 160px
+  flex-basis: 140px
   flex-grow: 1
-  flex-shrink: 0
-  border-radius: 10px
-  border: 1px solid #ffbf47
-  min-height: 140px
+  flex-shrink: 1
+  min-height: 110px
   padding: 3px
 
   &:nth-child(2)
-    border: yellow 1px solid
     @media screen and (max-width: 767px)
-      margin-left: 5px
+      border-left: 1px solid grey
+      margin-left: 4px
+      padding-left: 4px
 
   &:nth-child(3)
-    border: lightblue 1px solid
     @media screen and (max-width: 767px)
-      margin-left: 5px
+      border-left: 1px solid grey
+      margin-left: 4px
+      padding-left: 4px
 
   @media screen and (min-width: 768px)
     margin-top: 10px
@@ -337,9 +342,9 @@ p#score-board
     display: flex
     align-items: center
     justify-content: center
-    width: 38px
-    height: 30px
-    font-size: 10pt
+    width: 30px
+    height: 24px
+    font-size: 8pt
 
 #show
   display: flex
@@ -351,9 +356,9 @@ p#score-board
     flex-basis: 90%
     flex-shrink: 0
     flex-grow: 1
-    margin-top: 10px
-    height: 50px
-    font-size: 14pt
+    margin-top: 8px
+    height: 40px
+    font-size: 13pt
     cursor: pointer
 
 .dice-case
@@ -361,11 +366,9 @@ p#score-board
   flex-wrap: wrap
   overflow: hidden
   justify-content: space-evenly
-  border-bottom: 1px solid grey
-  border-radius: 8px
 
   & > :not(.pair)
-    padding-top: 20px
+    padding-top: 16px
 
   .hell &
     color: darkred
@@ -374,12 +377,10 @@ p#score-board
 
   .pair
     display: flex
-    margin-top: 8px
-    padding: 10px 8px 2px 8px
+    padding: 8px 6px 2px 6px
     flex-grow: 0
     flex-shrink: 0
     justify-content: space-evenly
-    padding-bottom: 8px
     border-bottom: 1px solid
     border-radius: 8px
     font-weight: bold

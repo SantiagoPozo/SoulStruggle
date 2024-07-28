@@ -196,9 +196,7 @@ export default function Fanel() {
               fourNumberArray={[c, d, e, f]}
             />
             <div className="message">
-              <p>
-                <div key={`bton-${index}`}>{message}</div>
-              </p>
+              <p>{message}</p>
             </div>
           </div>
         );

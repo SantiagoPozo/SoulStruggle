@@ -115,10 +115,10 @@ const Meeple = ({ type, colNumber, position }) => {
   // increment vale 2, 4, 6, 8, 6, 4, 2. Es el número de círculos
   // por encima de earth y por debajo de earth.
 
-  let yCoord = type === "main" ? 2 : 1;
-  yCoord += -36 * increment;
+  let yCoord = type === "main" ? -1 : -3;
+  yCoord += -26 * increment;
 
-  const xCoord = type === "main" ? 4 : 16;
+  const xCoord = type === "main" ? 2 : 12;
   const className = type === "main" ? "main meeple" : "shadow meeple";
   const id =
     type === "main" ? `meeple-main${colNumber}` : `meeple-shadow${colNumber}`;
