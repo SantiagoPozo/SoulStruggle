@@ -159,7 +159,9 @@ export default function Fanel() {
               clave={`case-${index}`}
               fourNumberArray={[c, d, e, f]}
             />
-            <div className="message">{message}</div>
+            <div className="message">
+              <p>{message}</p>
+            </div>
           </div>
         );
         newOptions.push(op);

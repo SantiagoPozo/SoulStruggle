@@ -6,13 +6,6 @@ import Fanel from "./components/Fanel";
 import VictoryMessage from "./components/Victory";
 import "./style.sass";
 
-const resizeBodyHeight = () => {
-  const h = window.innerHeight;
-  document.body.style.minHeight = h + "px";
-};
-window.addEventListener("load", resizeBodyHeight);
-window.addEventListener("resize", resizeBodyHeight);
-
 const gC = {
   colsToWin: 3,
   diceSize: 4,

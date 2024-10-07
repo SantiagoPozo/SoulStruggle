@@ -1,3 +1,7 @@
+@import "sass/components/score-board"
+@import "sass/components/dice"
+@import "sass/components/panel"
+@import "sass/components/title"
 
 body
   margin: 0
@@ -8,37 +12,19 @@ body
   justify-content: center
   align-items: center
 
-header
-  margin-top: 100px
-  text-align: center
-  font-synthesis-small-caps: inherit
-
 #root
   display: flex
   flex-direction: column
   transform-origin: top left
   margin: 0
-  @media screen and (max-width: 499px)
-    transform: scale(0.73)
-
-button#start
-  font-size: 30pt
-  background-color: white
-  border-radius: 10px
-  padding: 30px
 
 #gaming
   display: flex
-  flex-direction: column
-  border-radius: 10px
   transform: scale(1)
-
-  @media screen and (min-width: 768px)
-    flex-direction: row
-    width: 768px
-
-  @media screen and (max-width: 767px)
-    width: 520px
+  border: 3px solid grey
+  transition: all 0.5s ease
+  flex-wrap: wrap
+  justify-content: space-evenly
 
 #fixer
   position: relative
@@ -46,9 +32,8 @@ button#start
   padding: 0
   order: 1
   display-grow: 0
-
-#board
-  margin: 0
+  width: 350px
+  height: 458px
 
 #heav-score
   position: absolute
@@ -61,6 +46,8 @@ button#start
   padding: 5px
   border-radius: 5px
   transition: box-shadow 0.5s ease
+  .hell &
+    border: 3px solid darkblue
 
   &.border
     background: darkblue
@@ -77,6 +64,9 @@ button#start
   padding: 5px
   transition: box-shadow 0.5s ease
 
+  .heaven &
+    border: 3px solid darkred
+
   &.border
     background: darkred
     color: white
@@ -88,10 +78,10 @@ button#start
   order: 1
 
   &.hell
-    background: orange
+    background: linear-gradient(to top, orange 0%, white 50%)
 
   &.heaven
-    background: lightblue
+    background: linear-gradient(to top, white 50%, lightblue 80%)
 
 .columna
   margin: 7px
@@ -108,18 +98,6 @@ button#start
     &.active
       // box-shadow: 3px -3px 1px orange, -1px 1px 1px orange
       background-color: white
-
-p#score-board
-  position: absolute
-  top: 0px
-  left: -40px
-  font-size: 20pt
-  text-align: center
-  writing-mode: vertical-rl
-  margin: 0
-  padding: 0
-  height: 650px
-  transform: rotate(180deg)
 
 .circle
   display: flex
@@ -165,86 +143,11 @@ p#score-board
 #head
   transform: rotate(180deg)
 
-#panel
-  padding: 0
-  order: 2
-
-  button
-    transition: box-shadow 0.3s ease
-    background: white
-    border-radius: 10px
-    box-shadow: 0px 0px 12px grey
-
-    button:hover
-      box-shadow: 4px 4px 10px red, -4px -4px 10px orange
-      animation: glowing 5s infinite
-      @keyframes glowing
-        0%
-          box-shadow: 4px 4px 10px red, -4px -4px 10px orange
-        50%
-          box-shadow: 4px 4px 10px yellow, -4px -4px 10px yellow, -4px 4px 10px yellow, 4px -4px 10px yellow
-        100%
-          box-shadow: 4px 0px 10px red, -4px 0px 10px orange, 0px 4px 10px yellow, 0px -4px 10px pink
-
-    button:hover
-      box-shadow: 4px -4px 10px purple, -4px 4px 10px turquoise
-      animation: glowing 5s infinite
-      @keyframes glowing
-        0%
-          box-shadow: 0px 0px 15px purple
-        50%
-          box-shadow: 4px 4px 10px lightblue, -4px -4px 10px lightblue, -4px 4px 10px lightblue, 4px -4px 10px lightblue
-        100%
-          box-shadow: 0px 0px 15px purple
-
-  @media screen and (max-width: 767px)
-    min-width: 510px
-
-  @media screen and (min-width: 768px)
-    flex-basis: 220px
-    flex-grow: 0
-    flex-shrink: 0
-    padding-top: 20px
-    border-radius: 0 10px 10px 0
-
-#dadum
-  margin: 5px 0
-  display: flex
-  justify-content: space-between
-  margin-top: 10px
-
-  @media screen and (min-width: 768px)
-    margin-top: 0
-    flex-wrap: wrap
-
-  &.par .dado
-    &:nth-child(2n)
-      transform: rotate(1080deg)
-    &:nth-child(2n + 1)
-      // transform: rotate(-1080deg)
-      transform: rotate3d(1, 1, 1, 1080deg)
-  .dado
-    width: 60px
-    height: 49px
-    margin-left: 5px
-    font-size: 14pt
-    font-weight: bold
-    transition: transform 0.4s ease
-    @media screen and (min-width: 768px)
-      margin-left: 20px
-
-    .heaven & div
-      margin-top: 18px
-
-    .hell & div
-      margin-top: 10px
-
 .in-game-buttons
   display: flex
   justify-content: space-between
   margin-top: 8px
-  @media screen and (min-width: 768px)
-    flex-wrap: wrap
+  flex-wrap: no-wrap
 
   button
     // Roll the dice // Pass //
@@ -256,15 +159,7 @@ p#score-board
     background-color: white
     border-radius: 4px
 
-    @media screen and (min-width: 768px)
-      flex-basis: 160px
-      margin: 0 8px
-      flex-shrink: 0
-      flex-grow: 1
 
-    &:not(:first-child)
-      @media screen and (min-width: 768px)
-        margin-top: 8px
 
   .option-button
     @media screen and (min-width: 768px)
@@ -273,20 +168,6 @@ p#score-board
 .disappear
   display: none
 
-.dado
-  display: flex
-  justify-content: center
-  background-repeat: no-repeat
-  background-size: cover
-  background-position: center
-
-  .heaven &
-    background-image: url("/img/white-dice.png")
-    color: darkblue
-
-  .hell &
-    background-image: url("/img/black-dice.png")
-    color: darkred
 
 .like-a-button
   box-shadow: 2px 2px 10px grey
@@ -313,11 +194,20 @@ p#score-board
   box-shadow: 1px 1px 6px grey
 
 .option-div
-  flex-basis: 140px
-  flex-grow: 1
-  flex-shrink: 1
-  min-height: 110px
+  flex-basis: 162px
+  flex-grow: 0
+  flex-shrink: 0
+  flex-wrap: wrap
+  flex-direction: column
   padding: 3px
+  font-size: 0.8rem
+
+  @media screen and (min-width: 768px)
+    flex-basis: 300px
+    max-width: 90%
+    margin: auto
+    flex-shrink: 0
+    font-size: 1rem
 
   &:nth-child(2)
     @media screen and (max-width: 767px)
@@ -334,18 +224,6 @@ p#score-board
   @media screen and (min-width: 768px)
     margin-top: 10px
 
-  .dado
-    padding: 0
-    background-repeat: no-repeat
-    background-size: cover
-    background-position: center
-    display: flex
-    align-items: center
-    justify-content: center
-    width: 30px
-    height: 24px
-    font-size: 8pt
-
 #show
   display: flex
   flex-wrap: wrap
@@ -361,58 +239,7 @@ p#score-board
     font-size: 13pt
     cursor: pointer
 
-.dice-case
-  display: flex
-  flex-wrap: wrap
-  overflow: hidden
-  justify-content: space-evenly
 
-  & > :not(.pair)
-    padding-top: 16px
-
-  .hell &
-    color: darkred
-  .heaven &
-    color: darkblue
-
-  .pair
-    display: flex
-    padding: 8px 6px 2px 6px
-    flex-grow: 0
-    flex-shrink: 0
-    justify-content: space-evenly
-    border-bottom: 1px solid
-    border-radius: 8px
-    font-weight: bold
-
-  .braces
-    flex-basis: 100%
-    flex-shrink: 0
-    flex-grow: 1
-    display: flex
-    margin: 0
-    padding: 0
-    padding-bottom: 5px
-
-    div.brace
-      flex: 1 1 40%
-      display: flex
-      justify-content: center
-
-  .dado:first-child
-    transform: rotate(10deg)
-
-    .hell &
-      transform: rotate(-20deg)
-
-  .dado:nth-child(2)
-    margin-left: -10px
-
-    .hell &
-      transform: rotate(25deg)
-
-    .heaven &
-      transform: rotate(-20deg)
 
 .message
   p
@@ -425,8 +252,8 @@ p#score-board
 #victory-message
   font-size: 32pt
   font-family: sans-serif
-  height: 450px
-  width: 450px
+  height: 400px
+  width: 400px
   cursor: pointer
   border: 3px solid grey
   border-radius: 20px
