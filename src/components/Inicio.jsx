@@ -6,15 +6,14 @@ function Title() {
         A push-your-luck game for two players strongly based on Can't Stop.
       </h2>
       <p>
-        Set three <i>souls</i> <MeepleImage fill="#333" />
-        for your team to win.
+        Settle three <i>souls</i> <MeepleImage fill="green" />
+        in your Realm to win.
       </p>
       <p>
         Each turn you can move up to two <i>shadows</i>{" "}
         <MeepleImage fill="#333" /> into your realm. If you pass before losing,
-        the <i>souls</i> (
-        <MeepleImage fill="green" />) will settle in their new position. If not,
-        the shadows will rejoin the souls.
+        the <i>souls</i> will settle in their new spiritual circle. If not, the
+        shadow or shadows will rejoin their souls wasting one turn.
       </p>
     </header>
   );
