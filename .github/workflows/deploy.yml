@@ -1,0 +1,35 @@
+name: Deploy a GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # Se ejecuta cada vez que subes algo a main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Instalación y Build
+        run: |
+          npm install
+          npm run build
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
