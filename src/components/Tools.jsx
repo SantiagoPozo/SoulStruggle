@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React from "react";
 import { useGameContext } from "./GameContext";
 
 const randomFace = () => {
@@ -10,7 +10,7 @@ const randomFace = () => {
  *****   Lost Turn  ******
  *************************/
 const LostTurn = () => {
-  const { gS, setGS } = useGameContext();
+  const { setGS } = useGameContext();
   return (
     <button
       id="lost-button"

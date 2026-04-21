@@ -35,17 +35,7 @@ function AppContent() {
 
   useEffect(() => {
     updateScore();
-  }, [gS.mPositions]);
-
-  const updateProgress = (nextPositions) => {
-    setGS((prv) => ({
-      ...prv,
-      mPositions: [...nextPositions],
-      active: Array(9).fill(false, 2, 9),
-      turn: prv.turn + 1,
-      move: 0,
-    }));
-  };
+  }, [gS.mPositions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateScore = () => {
     let hl = 0,

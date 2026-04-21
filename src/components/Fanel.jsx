@@ -5,23 +5,6 @@ import { LostTurn, DiceCase, Dado } from "./Tools";
 const rollDx = (x) => Math.floor(x * Math.random() + 1);
 //Math.random devuelve un valor en [0, 1)
 
-/***********************************
- ******   Bton. A component.
- **********************************/
-const Bton = ({ o1 = false, o2 = false, children, disabled }) => {
-  const { setGS, advanceShadows } = useGameContext();
-
-  return (
-    <button
-      className={"option-button"}
-      onClick={() => advanceShadows(o1, o2)}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
-
 export default function Fanel() {
   const { gS, setGS, advanceShadows } = useGameContext();
 

@@ -1,4 +1,3 @@
-import { getMouseEventOptions } from "@testing-library/user-event/dist/utils";
 import React, { createContext, useState, useContext } from "react";
 export const GameContext = createContext();
 
