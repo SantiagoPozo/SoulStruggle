@@ -1,16 +1,18 @@
 #panel
   padding: 0
   order: 2
-  background: #ffdcba
-  flex-basis: 350px
+  flex-basis: 220px
   flex-grow: 0
   flex-shrink: 0
   flex-direction: column
+  @media screen and (min-width: 700px)
+    padding-top: 20px
+    border-radius: 0 10px 10px 0
 
-  @media screen and (max-width: 768px)
+  @media screen and (max-width: 699px)
     align-items: space-between
     padding-top: 0
-    max-width: 100%
+    min-width: 510px
     border-radius: 0 0 10px 10px
 
   button

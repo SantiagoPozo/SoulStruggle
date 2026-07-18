@@ -1,0 +1,293 @@
+
+body
+  margin: 0
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  display: flex
+  justify-content: center
+  align-items: center
+
+#root
+  display: flex
+  flex-direction: column
+  transform-origin: top left
+  margin: 0
+  @media screen and (max-width: 499px)
+    transform: scale(0.73)
+
+.center
+  height: 100vh
+  display: flex
+  justify-content: center
+  align-items: center
+
+#gaming
+  display: flex
+  flex-direction: column
+  transition: all 0.5s ease
+  border-radius: 10px
+  transform: scale(1)
+  position: relative
+
+  @media screen and (min-width: 700px)
+    flex-direction: row
+    width: 768px
+
+  @media screen and (max-width: 699px)
+    width: 520px
+
+#rules-shortcut
+  position: absolute
+  top: 8px
+  right: 10px
+  font-size: 10pt
+  color: #555
+  text-decoration: none
+  opacity: 0.7
+  padding: 2px 6px
+  border-radius: 6px
+  background: rgba(255, 255, 255, 0.55)
+  transition: opacity 0.2s ease, color 0.2s ease
+  z-index: 2
+
+  &:hover
+    opacity: 1
+    color: #222
+
+#fixer
+  position: relative
+  margin: 0
+  padding: 0
+  order: 1
+  display-grow: 0
+  width: 350px
+  height: 458px
+  transform-origin: top left
+  @media screen and (orientation: landscape) and (max-height: 475px)
+    transform: scale(0.95)
+  @media screen and (orientation: landscape) and (max-height: 450px)
+    transform: scale(0.9)
+  @media screen and (orientation: landscape) and (max-height: 400px)
+    transform: scale(0.80)
+  @media screen and (orientation: landscape) and (max-height: 350px)
+    transform: scale(0.70)
+  @media screen and (orientation: landscape) and (max-height: 320px)
+    transform: scale(0.67)
+
+#heav-score
+  position: absolute
+  top: 24px
+  left: 16px
+  width: 60px
+  font-size: 14pt
+  text-align: center
+  background-color: lighblue
+  padding: 5px
+  border-radius: 5px
+  transition: box-shadow 0.5s ease
+  .hell &
+    border: 3px solid darkblue
+    color: darkblue
+
+  &.border
+    background: darkblue
+    color: white
+
+#hell-score
+  position: absolute
+  bottom: 24px
+  right: 16px
+  width: 60px
+  font-size: 14pt
+  text-align: center
+  border-radius: 5px
+  padding: 5px
+  transition: box-shadow 0.5s ease
+
+  .heaven &
+    border: 3px solid darkred
+    color: darkred
+
+  &.border
+    background: darkred
+    color: white
+
+#real-board
+  display: flex
+  align-items: center
+  justify-content: center
+  order: 1
+
+  &.hell
+    background: linear-gradient(to top, orange 0%, white 50%)
+
+  &.heaven
+    background: linear-gradient(to top, white 50%, lightblue 80%)
+
+.columna
+  margin: 7px
+  padding: 0
+  width: 36px
+  border-radius: 12px
+
+  .heaven &
+    &.active
+      // box-shadow: 3px -3px 1px lightblue, -1px 1px 1px lightblue
+      background-color: white
+
+  .hell &
+    &.active
+      // box-shadow: 3px -3px 1px orange, -1px 1px 1px orange
+      background-color: white
+
+.circle
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 32px
+  height: 24px
+  padding: 0
+  border-radius: 12px
+  margin: 2px
+  box-sizing: border-box
+
+  &.heaven
+    background-color: #3498db
+    &.border
+      border-top: 8px solid darkslateblue
+      background-color: #3498db
+    &.dominion
+      background-color: darkslateblue
+
+  &.earth
+    background-color: #34db5e
+
+  &.hell
+    background-color: #db7734
+    &.border
+      border-bottom: 8px solid darkred
+    &.dominion
+      background-color: darkred
+
+.dominion
+  color: white
+  font-weight: bold
+
+.meeple
+  height: 0
+  width: 0
+  background-repeat: no-repeat
+  background-size: contain
+  background-position: center
+  left: 15px
+  transition: top 0.3s ease
+
+#head
+  transform: rotate(180deg)
+
+.in-game-buttons
+  display: flex
+  justify-content: space-between
+  margin-top: 8px
+  flex-wrap: no-wrap
+  @media screen and (min-width: 700px)
+    flex-wrap: wrap
+
+  button
+    // Roll the dice // Pass //
+    padding: 8px
+    margin: 0 4px
+    font-size: 15pt
+    flex-basis: 240px
+    flex-grow: 1
+    background-color: white
+    border-radius: 4px
+
+
+
+  .option-button
+    @media screen and (min-width: 700px)
+      margin-bottom: 12px
+
+.disappear
+  display: none
+
+
+.like-a-button
+  box-shadow: 2px 2px 10px grey
+  background-color: #ddd
+  animation: vibration 4s ease 1s 8
+  @keyframes vibration
+    0%
+      transform: rotate(0)
+    45%
+      transform: rotate(0deg)
+    48%
+      transform: rotate(-1deg)
+    50%
+      transform: rotate(1deg)
+    52%
+      transform: rotate(-1)
+    55%
+      transform: rotate(0deg)
+    100%
+      transform: rotate(0deg)
+
+.like-a-button:hover
+  cursor: pointer
+  box-shadow: 1px 1px 6px grey
+
+.option-div
+  flex-basis: 162px
+  flex-grow: 0
+  flex-shrink: 0
+  flex-wrap: wrap
+  flex-direction: column
+  padding: 3px
+  font-size: 0.8rem
+
+  @media screen and (min-width: 700px)
+    flex-basis: 300px
+    max-width: 90%
+    margin: auto
+    flex-shrink: 0
+    font-size: 1rem
+    margin-top: 10px
+  
+  @media screen and (max-width: 699px)
+    .message
+      display: none
+    &:nth-child(2)
+      padding-left: 4px
+
+    &:nth-child(3)
+      padding-left: 4px
+
+
+#show
+  display: flex
+  flex-wrap: wrap
+  justify-content: space-between
+
+  #lost-button
+    //this is lost button
+    flex-basis: 95%
+    flex-shrink: 0
+    flex-grow: 1
+    margin-top: 8px
+    height: 40px
+    font-size: 13pt
+    cursor: pointer
+
+.message
+  p
+    text-align: center
+    margin-top: 3px
+    font-style: italic
+    font-size: 11pt
+    
+.option-button
+  font-size: 14pt
+
+

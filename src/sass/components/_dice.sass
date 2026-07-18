@@ -11,7 +11,7 @@
   font-weight: bold
   transition: transform 0.4s ease
 
-  @media screen and (min-width: 768px)
+  @media screen and (min-width: 700px)
     margin-left: 0px
 
   .heaven & div
@@ -45,6 +45,10 @@
   display: flex
   justify-content: space-between
   margin-top: 10px
+
+  @media screen and (min-width: 700px)
+    margin-top: 0
+    flex-wrap: wrap
 
   &.par .dado
     &:nth-child(2n)
@@ -91,12 +95,24 @@
       flex: 1 1 40%
       display: flex
       justify-content: center
+  .dado 
+    .hell & div
+      margin-bottom: 15px
+    .heaven & div
+      margin-bottom: 5px
 
   .dado:first-child
     transform: rotate(10deg)
 
     .hell &
       transform: rotate(-20deg)
+
+@media screen and (min-width: 700px)
+  #dadum .dado
+    width: 60px
+    height: 49px
+    margin-left: 20px
+    font-size: 14pt
 
   .dado:nth-child(2)
     margin-left: -10px
