@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { GameProvider, useGameContext } from "./components/GameContext";
 import Board from "./components/Board";
 import Panel from "./components/Panel";
@@ -27,17 +27,8 @@ function AppContent() {
 
   useEffect(() => {
     updateScore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gS.mPositions]);
-
-  const updateProgress = (nextPositions) => {
-    setGS((prv) => ({
-      ...prv,
-      mPositions: [...nextPositions],
-      active: Array(9).fill(false, 2, 9),
-      turn: prv.turn + 1,
-      move: 0,
-    }));
-  };
 
   const updateScore = () => {
     let hl = 0,
