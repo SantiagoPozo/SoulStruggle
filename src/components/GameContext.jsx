@@ -1,4 +1,3 @@
-import { getMouseEventOptions } from "@testing-library/user-event/dist/utils";
 import React, { createContext, useState, useContext } from "react";
 export const GameContext = createContext();
 
@@ -7,9 +6,9 @@ export const valuesAtTheBeginning = {
   game: 0,
   move: 0, // Some moves make a turn.
   turn: 0, // when passed o fail, end a turn.
-  isGameStarted: false,
+  isGameStarted: true,
   isGameOver: false,
-  isHT: false, // Is Heaven's turn?
+  isHT: Math.random() < 0.5, // Is Heaven's turn?
   isRollDicePhase: true,
   roll: [0, 0, 0, 0],
   score: {

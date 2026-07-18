@@ -1,21 +1,50 @@
-header 
-  svg
-    transform: translateY(5px)
-
-header
+#rules
   margin-top: 100px
   text-align: center
   font-synthesis-small-caps: inherit
   max-width: 70ch
   width: 90vw
   margin: auto
+
+  p, ul
+    text-align: left
+    font-size: 16pt
+    margin-bottom: 2ex
+  li
+    list-style-type: decimal
+    margin-left: 20px
+    
+  svg
+    transform: translateY(5px)
   
-button#start
-  font-size: 30pt
+.rules 
+  display: flex
+  justify-content: space-evenly
+  flex-wrap: wrap
+  > div
+    display: flex
+    flex-direction: column
+    flex-wrap: wrap
+    align-items: center
+    p
+      font-size: 12pt
+      font-style: italic
+    > div
+      display: flex
+      flex-direction: row
+
+
+  
+button.start
+  font-size: 22pt
   background-color: white
   border-radius: 10px
-  padding: 30px
+  padding: 1ch
   width: 90vw
   max-width: 500px
-  margin: auto
-  margin-top: 50px
+  margin: 20px auto
+  background: linear-gradient(45deg, yellow, red, orange)
+  color: white
+  text-shadow: 2px 2px 3px black
+  cursor: pointer
+

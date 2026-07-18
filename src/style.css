@@ -19,7 +19,7 @@ p#score-board {
   font-weight: bold;
   transition: transform 0.4s ease;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
   .dado {
     margin-left: 0px;
   }
@@ -103,6 +103,12 @@ p#score-board {
   display: flex;
   justify-content: center;
 }
+.hell .dice-case .dado div {
+  margin-bottom: 15px;
+}
+.heaven .dice-case .dado div {
+  margin-bottom: 5px;
+}
 .dice-case .dado:first-child {
   transform: rotate(10deg);
 }
@@ -122,13 +128,12 @@ p#score-board {
 #panel {
   padding: 0;
   order: 2;
-  background: #ffdcba;
   flex-basis: 350px;
   flex-grow: 0;
   flex-shrink: 0;
   flex-direction: column;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 699px) {
   #panel {
     align-items: space-between;
     padding-top: 0;
@@ -158,11 +163,7 @@ p#score-board {
   }
 }
 
-header svg {
-  transform: translateY(5px);
-}
-
-header {
+#rules {
   margin-top: 100px;
   text-align: center;
   font-synthesis-small-caps: inherit;
@@ -170,16 +171,50 @@ header {
   width: 90vw;
   margin: auto;
 }
+#rules p, #rules ul {
+  text-align: left;
+  font-size: 16pt;
+  margin-bottom: 2ex;
+}
+#rules li {
+  list-style-type: decimal;
+  margin-left: 20px;
+}
+#rules svg {
+  transform: translateY(5px);
+}
 
-button#start {
-  font-size: 30pt;
+.rules {
+  display: flex;
+  justify-content: space-evenly;
+}
+.rules > div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.rules > div p {
+  font-size: 12pt;
+  font-style: italic;
+}
+.rules > div > div {
+  display: flex;
+  flex-direction: row;
+}
+
+button.start {
+  font-size: 22pt;
   background-color: white;
   border-radius: 10px;
-  padding: 30px;
+  padding: 1ch;
   width: 90vw;
   max-width: 500px;
-  margin: auto;
-  margin-top: 50px;
+  margin: 20px auto;
+  background: linear-gradient(45deg, yellow, red, orange);
+  color: white;
+  text-shadow: 2px 2px 3px black;
+  cursor: pointer;
 }
 
 body {
@@ -199,13 +234,18 @@ body {
   margin: 0;
 }
 
+.center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #gaming {
   display: flex;
-  transform: scale(1);
-  border: 3px solid grey;
   transition: all 0.5s ease;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 #fixer {
@@ -216,6 +256,32 @@ body {
   display-grow: 0;
   width: 350px;
   height: 458px;
+  transform-origin: top left;
+}
+@media screen and (orientation: landscape) and (max-height: 475px) {
+  #fixer {
+    transform: scale(0.95);
+  }
+}
+@media screen and (orientation: landscape) and (max-height: 450px) {
+  #fixer {
+    transform: scale(0.9);
+  }
+}
+@media screen and (orientation: landscape) and (max-height: 400px) {
+  #fixer {
+    transform: scale(0.8);
+  }
+}
+@media screen and (orientation: landscape) and (max-height: 350px) {
+  #fixer {
+    transform: scale(0.7);
+  }
+}
+@media screen and (orientation: landscape) and (max-height: 320px) {
+  #fixer {
+    transform: scale(0.67);
+  }
 }
 
 #heav-score {
@@ -232,6 +298,7 @@ body {
 }
 .hell #heav-score {
   border: 3px solid darkblue;
+  color: darkblue;
 }
 #heav-score.border {
   background: darkblue;
@@ -251,6 +318,7 @@ body {
 }
 .heaven #hell-score {
   border: 3px solid darkred;
+  color: darkred;
 }
 #hell-score.border {
   background: darkred;
@@ -298,7 +366,8 @@ body {
   background-color: #3498db;
 }
 .circle.heaven.border {
-  border: 3px solid darkslateblue;
+  border-top: 8px solid darkslateblue;
+  background-color: #3498db;
 }
 .circle.heaven.dominion {
   background-color: darkslateblue;
@@ -310,7 +379,7 @@ body {
   background-color: #db7734;
 }
 .circle.hell.border {
-  border: 3px solid darkred;
+  border-bottom: 8px solid darkred;
 }
 .circle.hell.dominion {
   background-color: darkred;
@@ -350,7 +419,7 @@ body {
   background-color: white;
   border-radius: 4px;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
   .in-game-buttons .option-button {
     margin-bottom: 12px;
   }
@@ -403,32 +472,25 @@ body {
   padding: 3px;
   font-size: 0.8rem;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
   .option-div {
     flex-basis: 300px;
     max-width: 90%;
     margin: auto;
     flex-shrink: 0;
     font-size: 1rem;
-  }
-}
-@media screen and (max-width: 767px) {
-  .option-div:nth-child(2) {
-    border-left: 1px solid grey;
-    margin-left: 4px;
-    padding-left: 4px;
-  }
-}
-@media screen and (max-width: 767px) {
-  .option-div:nth-child(3) {
-    border-left: 1px solid grey;
-    margin-left: 4px;
-    padding-left: 4px;
-  }
-}
-@media screen and (min-width: 768px) {
-  .option-div {
     margin-top: 10px;
+  }
+}
+@media screen and (max-width: 699px) {
+  .option-div .message {
+    display: none;
+  }
+  .option-div:nth-child(2) {
+    padding-left: 4px;
+  }
+  .option-div:nth-child(3) {
+    padding-left: 4px;
   }
 }
 
@@ -438,7 +500,7 @@ body {
   justify-content: space-between;
 }
 #show #lost-button {
-  flex-basis: 90%;
+  flex-basis: 95%;
   flex-shrink: 0;
   flex-grow: 1;
   margin-top: 8px;
@@ -450,6 +512,8 @@ body {
 .message p {
   text-align: center;
   margin-top: 3px;
+  font-style: italic;
+  font-size: 11pt;
 }
 
 .option-button {
@@ -462,7 +526,6 @@ body {
   height: 400px;
   width: 400px;
   cursor: pointer;
-  border: 3px solid grey;
   border-radius: 20px;
   box-shadow: 6px -6px grey;
   text-align: center;

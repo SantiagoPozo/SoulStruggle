@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+}
+
+#rules {
+  margin-top: 100px;
+  text-align: center;
+  font-synthesis-small-caps: inherit;
+  max-width: 70ch;
+  width: 90vw;
+  margin: auto;
+}
+
+#rules p,
+#rules ul {
+  text-align: left;
+  font-size: 16pt;
+  margin-bottom: 2ex;
+}
+
+#rules li {
+  list-style-type: decimal;
+  margin-left: 20px;
+}
+
+.rules-page {
+  width: 90vw;
+  max-width: 70ch;
+  margin: 24px auto 48px;
+}
+
+.rules-page header {
+  text-align: center;
+}
+
+.rules-page h1 {
+  margin-bottom: 0.25rem;
+}
+
+.rules-page h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.rules-page .cta {
+  display: inline-block;
+  margin-top: 8px;
+  margin-bottom: 14px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  background: linear-gradient(45deg, #2c6fe3, #db7734);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.rules-page .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+.rules-page .legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.heaven {
+  background: #3498db;
+}
+
+.dot.hell {
+  background: #db7734;
+}
+
+.dot.soul {
+  background: #34db5e;
+}
+
+.dot.shadow {
+  background: #444;
+}

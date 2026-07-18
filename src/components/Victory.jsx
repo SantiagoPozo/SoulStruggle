@@ -12,10 +12,12 @@ const VictoryMessage = () => {
 
   const closeVictory = () => {
     setGS((prv) => {
+      let isHT = prv.winner === "hell";
+
       const nxt = {
         ...valuesAtTheBeginning,
         game: prv.game + 1,
-        isHT: prv.game / 2 === 0,
+        isHT: isHT,
         isGameStarted: true,
         winCount: {
           hell: prv.winCount.hell,
@@ -30,12 +32,14 @@ const VictoryMessage = () => {
   const className = gS.winner;
 
   return (
-    <button id="victory-message" className={className} onClick={closeVictory}>
-      <div>
-        <p>{message}</p>
-        <p>Play Again...</p>
-      </div>
-    </button>
+    <div class="center">
+      <button id="victory-message" className={className} onClick={closeVictory}>
+        <div>
+          <p>{message}</p>
+          <p>Play Again...</p>
+        </div>
+      </button>
+    </div>
   );
 };
 

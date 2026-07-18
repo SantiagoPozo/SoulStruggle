@@ -122,7 +122,34 @@ const Meeple = ({ type, colNumber, position }) => {
   const className = type === "main" ? "main meeple" : "shadow meeple";
   const id =
     type === "main" ? `meeple-main${colNumber}` : `meeple-shadow${colNumber}`;
-  const meepleColor = type === "main" ? "#11dd00" : "#444444";
+  let meepleColor = type === "main" ? "#11dd00" : "#444444";
+  if (type === "main") {
+    /* git-ignore */
+    (((colNumber === 2 || colNumber === 8) && position === 2) ||
+      ((colNumber === 3 || colNumber === 7) && position >= 3) ||
+      ((colNumber === 4 || colNumber === 6) && position >= 4) ||
+      (colNumber === 5 && position >= 5)) &&
+      (meepleColor = "blue");
+    (((colNumber === 2 || colNumber === 8) && position === -2) ||
+      ((colNumber === 3 || colNumber === 7) && position <= -3) ||
+      ((colNumber === 4 || colNumber === 6) && position <= -4) ||
+      (colNumber === 5 && position <= -5)) &&
+      (meepleColor = "red");
+    /* git-ignore */
+  } else {
+    /* git-ignore */
+    (((colNumber === 2 || colNumber === 8) && position === 2) ||
+      ((colNumber === 3 || colNumber === 7) && position >= 3) ||
+      ((colNumber === 4 || colNumber === 6) && position >= 4) ||
+      (colNumber === 5 && position >= 5)) &&
+      (meepleColor = "#222288");
+    (((colNumber === 2 || colNumber === 8) && position === -2) ||
+      ((colNumber === 3 || colNumber === 7) && position <= -3) ||
+      ((colNumber === 4 || colNumber === 6) && position <= -4) ||
+      (colNumber === 5 && position <= -5)) &&
+      (meepleColor = "#882222");
+    /* git-ignore */
+  }
   return (
     <div
       className={className}

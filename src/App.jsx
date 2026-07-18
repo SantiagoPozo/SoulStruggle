@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GameProvider, useGameContext } from "./components/GameContext";
-import Inicio from "./components/Inicio";
 import Board from "./components/Board";
-import Fanel from "./components/Fanel";
+import Panel from "./components/Panel";
 import VictoryMessage from "./components/Victory";
 import "./style.sass";
 
@@ -11,7 +10,7 @@ const gC = {
   diceSize: 4,
   puncPos: [undefined, undefined, 2, 3, 4, 5, 4, 3, 2],
   //I'm not going to make an adaptation with
-  // cols from 2  to 12 and d6 dice, but it is an estimulating idea.
+  // cols from 2 to 12 and d6 dice, but it is an stimulating idea.
 };
 
 export default function App() {
@@ -81,32 +80,19 @@ function AppContent() {
     });
   };
 
-  const startGame = () => {
-    setGS((prv) => {
-      const heavenStarts = !(prv.game % 2);
-      const nxt = {
-        ...prv,
-        isGameStarted: true,
-        isHT: heavenStarts,
-        game: prv.game + 1,
-      };
-      return nxt;
-    });
-  };
-
-  if (!gS.isGameStarted) {
-    return (
-      <>
-        <Inicio ini={startGame} />
-      </>
-    );
-  }
-
   if (gS.isGameStarted && !gS.isGameOver) {
     return (
       <div id="gaming" className={gS.isHT ? "heaven" : "hell"}>
+        <a
+          id="rules-shortcut"
+          href={`${process.env.PUBLIC_URL}/rules.html`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Rules
+        </a>
         <Board key="board" />
-        <Fanel key="fanel" />
+        <Panel key="panel" />
       </div>
     );
   }
